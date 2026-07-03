@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Scheda Personaggio</title>
+  <link rel="stylesheet" href="/legacy-assets/stili.css">
+  <style>
+    body { background: #000; padding: 8px 12px; }
+    a:hover { text-decoration: underline; }
+    #immagine_clan { float: right; margin: 5px; }
+    #immagine_clan img { width: 120px; height: auto; }
+    hr { border: 0; border-top: 1px solid #444; }
+    .px-buttons .button { font-size: 10px; width: 100px; }
+  </style>
+</head>
+<body bgcolor="#000000">
+  <div id="sheet"><div class="small" style="padding:20px">Caricamento scheda...</div></div>
+
+  <script>
+    var params = new URLSearchParams(location.search);
+    var meId = params.get("me");
+    var targetId = params.get("id");
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+    var ucfirst = function (s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; };
+
+    var vpToken = sessionStorage.getItem("vp_token") || "";
+    function sidecar(method, path) {
+      var sep = path.indexOf("?") === -1 ? "?" : "&";
+      return fetch(path + sep + "matrix_user_id=" + encodeURIComponent(meId), {
+        method: method,
+        headers: { "x-vp-token": vpToken },
+      })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); });
+    }
+
+    function trait(label, val, max) {
+      return '<tr><td class="small" align="right"><b>' + label + ':</b></td>' +
+        '<td class="small">' + esc(val == null ? "-" : val) + '</td>' +
+        '<td class="small" width="100%">' + (max == null ? "" : "[" + esc(max) + "]") + '</td></tr>';
+    }
+
+    function crest(clan) {
+      return '<div id="immagine_clan"><img src="/legacy-assets/images/clan_' + (clan || "nero") + '_img.jpg" alt="' + esc(clan) + '"></div>';
+    }
+    function identity(c, name) {
+      return crest(c.clan) +
+        '<div id="nome_id"><ul>' +
+          '<li><b>Nome</b>: ' + esc(name) + '</li>' +
+          '<li><b>Clan</b>: ' + esc(ucfirst(c.clan || "")) + '</li>' +
+          '<li><b>Status</b>: ' + esc(c.status || "") + '</li>' +
+          (c.citta ? '<li><b>Citt&agrave;</b>: ' + esc(c.citta) + '</li>' : '') +
+        '</ul></div>' +
+        '<div id="descrizione_id"><p class="motto">' + esc(c.note || "") + '</p></div>';
+    }
+    function disciplineRows(disc) {
+      return Object.keys(disc || {}).map(function (k) {
+        return '<tr><td class="small_rosso"><b>' + esc(k.toUpperCase()) + '</b></td>' +
+          disc[k].map(function (p) { return '<td class="small">' + esc(p) + '</td>'; }).join("") + '</tr>';
+      }).join("");
+    }
+    function abilitaRows(ab) {
+      return (ab || []).map(function (a) {
+        return '<tr><td class="small" align="right"><b>' + esc(a[0]) + ':</b></td><td class="small">' + esc(a[1]) + '</td></tr>';
+      }).join("");
+    }
+    function openPagina(p) {
+      window.open("/pagina.html?p=" + p + "&me=" + encodeURIComponent(meId), "VP_" + p, "width=650,height=600,scrollbars=yes,resizable=yes");
+    }
+    function nav() {
+      var links = [["Scheda", ""], ["Profilo", ""], ["Inventario", "inventario"], ["Armi", "armi"],
+        ["Influenze", ""], ["Rifugio", ""], ["Rituali", ""], ["Missive", "missive"], ["Banca", "banca"], ["Appunti", ""]];
+      return '<div id="pulsantiera"><ul>' + links.map(function (l) {
+        var attr = l[1] ? ' href="javascript:void(0)" onclick="openPagina(\'' + l[1] + '\')"' : '';
+        return '<li class="pulsantiera_list"><a class="plain_rosso_pulsantiera"' + attr + '>' + l[0] + '</a></li>';
+      }).join("") + '</ul></div>';
+    }
+
+    function renderSelf(c) {
+      var hidden = c.presence && c.presence.obfuscate_level > 0;
+      var powers = c.powers || [];
+      var has = function () { for (var i = 0; i < arguments.length; i++) if (powers.indexOf(arguments[i]) !== -1) return true; return false; };
+      var tratti =
+        '<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr>' +
+          '<td class="medium" colspan="4" align="center" bgcolor="#555555"><b>TRATTI</b></td></tr><tr>' +
+          '<td width="50%"><table border="0" cellpadding="0" cellspacing="2" width="100%">' +
+            trait("Mentali", c.mental_points, c.men_max) + trait("Fisici", c.fis, c.fis_max) + trait("Sociali", c.soc, c.soc_max) +
+            trait("Sangue", c.blood, c.bloodmax) + trait("Volont&agrave;", c.will, c.willmax) +
+            '<tr><td class="small" align="right"><b>Natura:</b></td><td class="small" colspan="2">' + esc(c.natura || "") + '</td></tr>' +
+          '</table></td>' +
+          '<td width="50%" valign="top"><table border="0" cellpadding="0" cellspacing="2" width="100%">' +
+            '<tr><td class="small" align="right" width="100%"><b>Generazione:</b></td><td class="small">' + esc(c.gen) + '</td></tr>' +
+            '<tr><td class="small" align="right" width="100%"><b>Umanit&agrave;:</b></td><td class="small">' + esc(c.umanita) + '</td></tr>' +
+            '<tr><td>&nbsp;</td></tr>' +
+            '<tr><td class="small" align="right"><b>Salute:</b></td><td class="small">' + esc(c.salute || "") + '</td></tr>' +
+            '<tr><td class="small" align="right"><b>Frenesia:</b></td><td class="small">' + esc(c.beast || 0) + '</td></tr>' +
+          '</table></td></tr></table>';
+
+      var abilDisc =
+        '<table border="0" cellpadding="0" cellspacing="3" width="100%"><tr>' +
+          '<td class="medium" align="center" width="20%" bgcolor="#555555"><b>ABILIT&Agrave;</b></td>' +
+          '<td class="medium" align="center" bgcolor="#555555"><b>DISCIPLINE</b></td></tr>' +
+          '<tr><td valign="top"><table border="0" cellpadding="0" cellspacing="3" width="100%">' + abilitaRows(c.abilita) + '</table></td>' +
+          '<td valign="top"><table align="center" border="0" cellpadding="0" cellspacing="1" width="98%">' + disciplineRows(c.disciplines) + '</table></td></tr>' +
+          '<tr><td class="small" colspan="5"><hr></td></tr></table>';
+
+      var powerRows = "";
+      if (has("obf1", "obf2", "ott1", "ott2")) {
+        var oLabel = hidden ? "Oscurati" : "Appari", oAct = hidden ? "appear" : "obfuscate";
+        powerRows += '<tr><td class="small" align="right"><b>OSCURAZIONE</b>&nbsp;</td>' +
+          '<td><input type="button" class="button" value="' + oLabel + '" style="font-size:10px;width:100px;" data-action="' + oAct + '"></td></tr>';
+      }
+      if (has("aus1", "aus2")) {
+        powerRows += '<tr><td class="small" align="right"><b>AUSPEX</b>&nbsp;</td>' +
+          '<td><input type="button" class="button" value="Scruta" style="font-size:10px;width:100px;" data-action="auspex"></td>' +
+          (powers.indexOf("aus2") !== -1 ? '<td><input type="button" class="button" value="Ascolta meglio" style="font-size:10px;width:100px;" data-action="auspex"></td>' : '') + '</tr>';
+      }
+      // discipline buffs: powers that raise a trait for a duration
+      var BUFFKEYS = { celerita: "Celerità", potenza: "Potenza", robustezza: "Robustezza", presenza: "Presenza", auspex: "Auspex" };
+      var norm = function (s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z]/g, ""); };
+      var buffRows = "";
+      Object.keys(c.disciplines || {}).forEach(function (k) {
+        var key = norm(k);
+        if (BUFFKEYS[key]) buffRows += '<tr><td class="small" align="right"><b>' + BUFFKEYS[key].toUpperCase() + '</b>&nbsp;</td>' +
+          '<td><input type="button" class="button" value="Attiva" style="font-size:10px;width:100px;" data-buff="' + key + '"></td></tr>';
+      });
+
+      var usable = Number(c.px_banca || 0) - Number(c.px_spesi || 0);
+      var px =
+        '<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr>' +
+          '<td width="50%" valign="top"><table border="0" cellpadding="0" cellspacing="0">' +
+            '<tr><td class="small" align="right"><b>PX</b> accumulati:</td><td class="small">' + esc(c.px_banca || 0) + '</td></tr>' +
+            '<tr><td class="small" align="right"><b>PX</b> spesi:</td><td class="small">' + esc(c.px_spesi || 0) + '</td></tr>' +
+            '<tr><td class="small" align="right"><b>PX</b> utilizzabili:</td><td class="small">' + esc(usable) + '</td></tr></table></td>' +
+          '<td width="50%" align="right"><table border="0" cellpadding="0" cellspacing="1" width="100%" class="px-buttons">' +
+            '<tr><td class="small" align="right"><b>FERITE</b>&nbsp;</td><td><input type="button" class="button" value="Guarisci" style="font-size:10px;width:100px;" data-action="guarisci"></td></tr>' +
+            '<tr><td class="small" align="right"><b>CACCIA</b>&nbsp;</td><td><input type="button" class="button" value="Caccia" style="font-size:10px;width:100px;" data-action="caccia"></td></tr>' +
+            '<tr><td class="small" align="right"><b>VOLONT&Agrave;</b>&nbsp;</td><td><input type="button" class="button" value="Spendi" style="font-size:10px;width:100px;" data-action="volonta"></td></tr>' +
+            '<tr><td class="small" align="right"><b>FUNZIONI VITALI</b>&nbsp;</td><td><input type="button" class="button" value="Attiva" style="font-size:10px;width:100px;" data-action="fva"></td></tr>' +
+            powerRows + buffRows + '</table></td></tr></table>';
+
+      document.getElementById("sheet").innerHTML = identity(c, c.display_name) + tratti + abilDisc + px + nav();
+      Array.prototype.forEach.call(document.querySelectorAll("[data-action]"), function (b) {
+        b.addEventListener("click", function () { b.disabled = true; sidecar("POST", "/" + b.getAttribute("data-action")).then(load); });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll("[data-buff]"), function (b) {
+        b.addEventListener("click", function () {
+          b.disabled = true;
+          fetch("/buff?matrix_user_id=" + encodeURIComponent(meId), { method: "POST", headers: { "content-type": "application/json", "x-vp-token": vpToken }, body: JSON.stringify({ power: b.getAttribute("data-buff") }) }).then(function () { load(); });
+        });
+      });
+    }
+
+    function renderOther(c) {
+      // legacy identita.php: identity card only (no private traits/px)
+      var abil = abilitaRows(c.abilita);
+      document.getElementById("sheet").innerHTML =
+        identity(c, ucfirst(c.display_name || c.id)) +
+        '<div style="clear:both"></div>' +
+        '<table border="0" cellpadding="0" cellspacing="3" width="100%"><tr>' +
+          '<td class="medium" align="center" width="20%" bgcolor="#555555"><b>ABILIT&Agrave;</b></td>' +
+          '<td class="medium" align="center" bgcolor="#555555"><b>DISCIPLINE</b></td></tr>' +
+          '<tr><td valign="top"><table border="0" cellpadding="0" cellspacing="3" width="100%">' + abil + '</table></td>' +
+          '<td valign="top"><table align="center" border="0" cellpadding="0" cellspacing="1" width="98%">' + disciplineRows(c.disciplines) + '</table></td></tr></table>';
+    }
+
+    function load() {
+      sidecar("GET", "/me").then(function (res) {
+        if (!res.ok) { document.getElementById("sheet").innerHTML = '<div class="small_rosso" style="padding:20px">Scheda non disponibile.</div>'; return; }
+        var self = res.body;
+        if (!targetId || targetId === self.id) { renderSelf(self); return; }
+        sidecar("GET", "/characters/" + encodeURIComponent(targetId)).then(function (r2) {
+          if (r2.ok) renderOther(r2.body); else renderSelf(self);
+        });
+      });
+    }
+
+    if (!meId) document.getElementById("sheet").innerHTML = '<div class="small_rosso" style="padding:20px">Sessione non valida.</div>';
+    else load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Sfida</title>
+  <link rel="stylesheet" href="/legacy-assets/stili.css">
+  <style>
+    body { background: #000; }
+    .bar { background: #444444; text-align: center; }
+    .pad { padding: 16px; }
+    .sfide { display: grid; gap: 8px; padding: 16px; }
+    .sfide .button { width: 100%; }
+    #esito { padding: 12px 16px; min-height: 24px; text-align: center; }
+    a.plain_e { color: #ccc; text-decoration: none; }
+    a.plain_e:hover { color: #761919; }
+  </style>
+</head>
+<body bgcolor="#000000">
+  <div id="page"></div>
+  <script>
+    var P = new URLSearchParams(location.search);
+    var me = P.get("me"), target = P.get("target"), name = P.get("name") || target;
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+
+    document.title = "Sfida con " + name;
+    document.getElementById("page").innerHTML =
+      '<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td class="medium bar" height="20"><b>SFIDA CON ' + esc(name).toUpperCase() + '</b></td></tr></table>' +
+      '<div class="sfide">' +
+        '<input type="button" class="button" value="Sfida Fisica" data-type="fisica">' +
+        '<input type="button" class="button" value="Sfida Mentale" data-type="mentale">' +
+        '<input type="button" class="button" value="Sfida Sociale" data-type="sociale">' +
+        '<input type="button" class="button" value="Mentale vs Fisica" data-type="menfis">' +
+      '</div>' +
+      '<div id="esito" class="medium"></div>' +
+      '<div class="pad" style="text-align:center"><a href="javascript:self.close()" class="plain_e">Chiudi</a></div>';
+
+    function challenge(type, btns) {
+      btns.forEach(function (b) { b.disabled = true; });
+      fetch("/challenge?matrix_user_id=" + encodeURIComponent(me), {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-vp-token": sessionStorage.getItem("vp_token") || "" },
+        body: JSON.stringify({ target: target, type: type }),
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+        .then(function (res) {
+          var e = document.getElementById("esito");
+          if (!res.ok || res.body.error) { e.innerHTML = '<span class="small_rosso">' + esc(res.body.error || "Errore") + '</span>'; }
+          else {
+            var b = res.body;
+            e.innerHTML = '<span class="' + (b.won ? "medium_over" : "medium_oro") + '"><b>' + (b.won ? "Hai colpito!" : "Colpo mancato") + '</b></span>' +
+              '<br><span class="small">' + esc(b.type) + ' &mdash; probabilità ' + b.percsucc + '%, dado ' + b.roll + '</span>';
+          }
+          btns.forEach(function (b) { b.disabled = false; });
+        }).catch(function () { btns.forEach(function (b) { b.disabled = false; }); });
+    }
+
+    var btns = Array.prototype.slice.call(document.querySelectorAll("[data-type]"));
+    btns.forEach(function (b) { b.addEventListener("click", function () { challenge(b.getAttribute("data-type"), btns); }); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Synapse for Railway: generates its config on first boot (persisted to the /data
+# volume), then applies the demo overrides (closed registration, shared secret for
+# provisioning, relaxed login rate limits mirroring the local dev homeserver).
+FROM matrixdotorg/synapse:latest
+
+ENV SYNAPSE_SERVER_NAME=local \
+    SYNAPSE_REPORT_STATS=no \
+    SYNAPSE_HTTP_PORT=8008
+
+COPY start-railway.sh /start-railway.sh
+RUN chmod +x /start-railway.sh
+
+EXPOSE 8008
+ENTRYPOINT ["/start-railway.sh"]

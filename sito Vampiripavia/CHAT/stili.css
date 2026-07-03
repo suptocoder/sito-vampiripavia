@@ -1,0 +1,958 @@
+/*__________________RESET__________________*/
+
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*---------------------------------- PRINCIPALI--------------------------------------*/
+
+
+
+
+
+body{
+	background-color: #000;
+	margin:0;
+	padding:0;
+	font-family: 'Varela Round', sans-serif;
+	
+	}
+
+p{
+	
+	
+	margin: 10px;
+	padding: 5px;
+
+}
+
+h2{
+	
+	font-weight: 300;
+	font-size: 2em;
+	margin: 0.5em;
+	
+	}
+	
+	
+h3 {
+	
+	font-size: 1.2em;
+	line-height: 30px;
+	font-weight: light;
+	letter-spacing: -1px;
+	color: #761919;
+	text-transform: uppercase;
+	padding-bottom: 7px;
+	margin-bottom: 38px;
+	font-family: 'Varela Round' !important;
+	border-bottom: 1px solid #dddddd;
+	
+	}
+
+
+h4	{
+	
+	font-size: 21px;
+	line-height: 30px;
+	font-weight: light;
+	letter-spacing: -1px;
+	color: #46403b;
+	text-transform: uppercase;
+	padding-bottom: 2px;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	margin-left: 5px;
+	font-family: 'Varela Round' !important;
+	border-bottom: 1px solid #dddddd;
+		
+	}
+	
+	
+h5	{
+	
+	display: block;
+	padding: 20px 0px 19px 10px;
+	margin-bottom: 5px;
+	font-size: 16px;
+	line-height: 18px;
+	color: #a9a9a9 !important;
+	text-align: left;
+		
+	}
+	
+small	{
+	
+	color:	#CCC;
+	text-align:	left;
+	text-decoration: none;
+	
+	}
+	
+ul	{
+	
+	list-style: none;
+	
+	}
+	
+strong	{
+		
+		font-weight:800;
+		color: #FFF;		
+		
+		}
+		
+
+
+
+
+/*---------------------------------------ID------------------------------------------ */
+
+
+
+
+
+   /*-------COMUNI-------*/
+
+	
+	
+#header {
+	
+	width:1024px;
+	height: 191px;
+	margin-top: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url(imgs/header_login.jpg);
+	background-repeat:no-repeat;
+
+	}
+	
+	
+#corpo {
+	
+	width: 1024px;
+	height: 600px;
+	margin: 0 auto;
+	text-align: center;
+	background-color: black;
+	background-image:url(imgs/corpo_login.jpg);
+	background-repeat: none;
+	
+	}
+	
+
+	
+
+	
+#copyright	{
+	
+	width: 1280px;
+	margin-top: 10px;
+	margin-bottom: 40px;
+	margin-left: auto;
+	margin-right: auto;
+	color: #666;
+	font-size: 0.7em;
+	height: 20px;
+	text-align: center;
+
+	}	
+	
+.contenuto_amb	{
+	
+	
+	width: 850px;
+	text-align: center;
+	margin: 10px auto;
+	color:#DDD;
+
+		
+	}
+	
+	
+/*---------------------------------------CLASSI E ID PER LOGIN------------------------------------------ */
+	
+	
+.login {
+  position: relative;
+  margin: 5px auto;
+  width: 410px;
+  padding-right: 32px;
+  font-weight: 300;
+  color: #a8a7a8;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+.login p {
+  margin: 0 0 10px;
+}
+
+input, button, label {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+input[type=text], input[type=password] {
+  padding: 0 10px;
+  width: 300px;
+  height: 40px;
+  color: #bbb;
+  text-shadow: 1px 1px 1px black;
+  background: rgba(0, 0, 0, 0.16);
+  border: 0;
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.06);
+}
+input[type=text]:focus, input[type=password]:focus {
+  color: white;
+  background: rgba(0, 0, 0, 0.1);
+  outline: 0;
+}
+
+label {
+  float: left;
+  width: 100px;
+  line-height: 40px;
+  padding-right: 10px;
+  font-weight: 100;
+  text-align: right;
+  letter-spacing: 1px;
+}
+
+.forgot-password {
+  padding-left: 100px;
+  font-size: 13px;
+  font-weight: 100;
+  letter-spacing: 1px;
+}
+
+.login-submit {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  width: 48px;
+  height: 48px;
+  padding: 8px;
+  border-radius: 32px;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+}
+.login-submit:before, .login-submit:after {
+  content: '';
+  z-index: 1;
+  position: absolute;
+}
+.login-submit:before {
+  top: 28px;
+  left: -4px;
+  width: 4px;
+  height: 10px;
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.06);
+}
+.login-submit:after {
+  top: -4px;
+  bottom: -4px;
+  right: -4px;
+  width: 36px;
+}
+
+.login-button {
+  position: relative;
+  z-index: 2;
+  width: 70px;
+  height: 70px;
+  padding: 0 0 48px;
+  /* Fix wrong positioning in Firefox 9 & older (bug 450418) */
+  text-indent: 120%;
+  white-space: nowrap;
+  overflow: hidden;
+  background: none;
+  border: 0;
+  border-radius: 24px;
+  cursor: pointer;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.1);
+  /* Must use another pseudo element for the gradient background because Webkit */
+  /* clips the background incorrectly inside elements with a border-radius.     */
+  
+}
+.login-button:before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  background: #761919;
+  border-radius: 30px;
+  background-image: -webkit-linear-gradient(top, #761919, #F00);
+  background-image: -moz-linear-gradient(top, #761919, #F00);
+  background-image: -o-linear-gradient(top, #761919, #F00);
+  background-image: linear-gradient(to bottom, #761919, #F00);
+  -webkit-box-shadow: inset 0 0 0 1px #761919, 0 0 0 5px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 0 0 1px #761919, 0 0 0 5px rgba(0, 0, 0, 0.16);
+  
+}
+.login-button:active:before {
+  background: #0591ba;
+  background-image: -webkit-linear-gradient(top, #F00, #761919);
+  background-image: -moz-linear-gradient(top, #F00, #761919);
+  background-image: -o-linear-gradient(top, #F00, #761919);
+  background-image: linear-gradient(to bottom, #F00, #761919);
+  
+}
+.login-button:after {
+  content: '';
+  position:absolute;
+  top: 7px;
+  left: 12px;
+  width: 46px;
+  height: 57px;
+  background: url("imgs/ankh_white.png") center no-repeat;
+  background-size:25px;
+  
+}
+
+::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.lt-ie9 input[type=text], .lt-ie9 input[type=password] {
+  line-height: 40px;
+  background: #282828;
+}
+.lt-ie9 .login-submit {
+  position: absolute;
+  top: 12px;
+  right: -28px;
+  padding: 4px;
+}
+.lt-ie9 .login-submit:before, .lt-ie9 .login-submit:after {
+  display: none;
+}
+.lt-ie9 .login-button {
+  line-height: 48px;
+}
+.lt-ie9 .about {
+  background: #313131;
+}
+
+/*---------------------------------------FINE CLASSI E ID PER LOGIN------------------------------------------ */
+
+/*---------------------------------------BANNER------------------------------------------ */
+
+#banner{
+	
+	width: 1250px;
+	margin-top:-10px;
+	height: 95px;
+	background-image:url(imgs/header_banner.jpg);
+	background-repeat: no-repeat;
+	background-color:white;
+	background-size: 100%;
+	background-position:bottom;
+	
+	}
+
+.banner_title{
+	
+	font-size: 12px;
+	color: #761919;
+	margin: 1px;
+	
+	}
+
+.banner_text{
+	
+	font-size: 10px;
+	color: #000000;
+	margin: 1px;
+	
+	}
+
+
+/*---------------------------------------FINE BANNER------------------------------------------ */
+
+/*-------------------------------------- INIZIO LUOGHI------------------------------------------ */
+
+.luoghi{
+	
+		text-decoration: none;
+		margin: 5px;
+
+	
+	}
+	
+	
+.luogo{
+	
+	color: #761919;
+	font-size: 14px;
+	text-decoration: none;
+	margin: 2px;
+	
+	}
+	
+.luogo:hover{
+	
+	color: #CCC;
+	text-decoration: none;
+	
+	}
+	
+
+
+/*---------------------------------------FINE LUOGHI------------------------------------------ */
+
+/*---------------------------------------INIZIO UTENTI------------------------------------------ */
+
+.utente	{
+	
+	color: #CCC;
+	font-size: 12px;
+	margin: 2px 2px 2px 10px;
+	text-decoration: none;
+
+	}
+	
+.utente_oscurato{
+	
+	text-decoration: none;
+	color: #CCC;
+	margin: 2px 2px 2px 10px;
+	font-size: 12px;
+
+	}
+	
+.utente	{
+	
+	color: #BBB;
+	text-shadow: 0px 0px 5px #CCC;
+	font-size: 12px;
+	margin: 2px 2px 2px 10px;
+	
+	}
+	
+	
+.utente_tasto	{
+	
+	color: #CCC;
+	font-size: 12px;
+	font-weight:900;
+	margin: 2px 2px 2px 2px;
+	text-decoration: none;
+	
+	}
+	
+.utente_tasto:hover	{
+	
+	color: #761919;
+	font-size: 12px;
+	margin: 2px 2px 2px 2px;
+	text-decoration: none;
+	
+	}
+
+
+/*---------------------------------------FINE UTENTI------------------------------------------ */
+
+/*---------------------------------------INIZIO MAPPA------------------------------------------ */
+
+#mappa{
+	width: 500px;
+	margin: 20px auto;
+	
+	}
+	
+#utenti_mappa{
+	
+margin: 15px auto;
+width: 500px;
+
+	}
+	
+#nav_mappa{
+	
+	width:300px;
+	margin: 5px auto;
+	text_align: center;
+
+	}
+	
+.lista_mappa{
+	
+	margin: 15px;
+	float: left;
+	
+	}
+	
+li.nav_mappa_lista{
+	
+	display: inline-block;
+	
+	
+	}
+	
+.mappe{
+	
+	text-decoration: none;
+	color: #CCC;
+	
+	}
+	
+a.mappe:hover{
+	
+	text-decoration: none;
+	color: #761919;
+	
+	}
+
+/*---------------------------------------FINE MAPPA------------------------------------------ */
+
+/*---------------------------------------INIZIO IDENTITA E SCHEDA------------------------------------------ */
+
+#immagine_id{
+	
+	width: 100px;
+	height: 100px;
+	float: left;
+	margin: 5px;
+	
+	}
+	
+	
+#nome_id{
+	
+	height:150px;
+	margin: 5px;
+	color: #EEE;
+	float:left;
+	
+	}
+	
+#descrizione_id{
+	
+	margin: 5px;
+	color: #EEE;
+	clear:both;
+	
+	}
+
+p.motto{
+	
+	color: #761919;
+	font-size: 0.8em;
+	margin: 0px auto;
+	
+	}
+	
+#clan_id{
+	
+	
+	}
+	
+#pulsantiera{
+	
+	float: left;
+	margin: 20px;
+	
+	}
+	
+li.pulsantiera_list{
+	
+	display: inline-block;
+	
+	}
+/*---------------------------------------FINE IDENTITA E SCHEDA------------------------------------------ */
+
+
+/*---------------------------------------OLD CHAT------------------------------------------ */
+
+
+TABLE.mappa{
+	border-color: #cccccc;
+}
+
+.copyright{	
+	color: #555555;	
+	font-size: 11px;
+}
+
+.plain_e{
+	text-decoration: none;
+	color: #cccccc;
+}
+
+.link_a{
+	
+	text-decoration: none;
+	color: #cccccc;
+	
+	}
+	
+.link_a:hover {
+	
+	color: #F00;
+	text-shadow: 0px 0px 5px #000;
+	
+	}
+
+
+
+.plain_rosso{
+	text-decoration: none;
+	color: #BB0000;
+}
+
+.plain_rosso_pulsantiera{
+	text-decoration: none;
+	font-weight: 800;
+	font-size: 1em;
+	color: #761919;
+}
+
+.plain_rosso_pulsantiera:hover{
+	
+	text-decoration: none;
+	color: #CCC;
+	
+	}
+
+
+.small{
+	font-family: Verdana;
+	color: #cccccc;
+	font-size: 10px;
+	text-decoration: none;
+}	
+
+table.zebra td.small{
+	font-family: Verdana;
+	color: #eeeeee;
+	background-color: #900;
+	font-size: 10px;
+	text-decoration: none;
+}	
+
+.small_c{
+	font-family: Verdana;
+	color: #cccccc;
+	background-color: #600;
+	font-size: 10px;
+	text-decoration: none;
+}	
+
+.big{
+	font-family: Verdana;
+	color: #cccccc;
+	font-size: 13px;
+	text-decoration: none;
+}	
+
+.small_rosso{
+	font-family: Verdana;
+	color: #BB0000;
+	font-size: 10px;
+}		
+
+TD.small_dark{
+	background-color: #350B02;
+	font-family: Verdana;
+	color: #cccccc;
+	font-size: 9px;
+}
+
+.medium{
+	font-family: Verdana;
+	color: #cccccc;
+	font-size: 12px;
+	text-decoration: none;
+}	
+
+.medium_over{
+	font-family: Verdana;
+	color: #BB0000;
+	font-size: 12px;
+	text-decoration: none;
+}	
+
+.medium_oro{
+	font-family: Verdana;
+	color: #ecc01a;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.medium_bianco{
+	font-family: Verdana;
+	color: #ffffff;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.entrata{
+	font-family: Verdana;
+	color: #FF9900;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.wisperto{
+	font-family: Verdana;
+	color: #888888;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.wisper_auspex{
+	font-family: Verdana;
+	color: #4B80EE;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.textfield_scuro{
+	font-size: 9px; 
+	background-color: #500D0D;
+	color: #FFFFFF;
+	font-family: Verdana;	
+}
+
+.textfield_chiaro{
+	font-size: 9px; 
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.textfield_grande{
+	font-size: 12px; 
+	background-color: #000000;
+	color: #FFFFFF;
+	font-family: Verdana;	
+}
+
+
+.textarea_scura{	
+	font-size:9px;
+	background-color: #500D0D;
+	color: #FFFFFF;
+	font-family: Verdana;	
+}
+
+.form_hidden{
+	font-family : Arial;
+	color : #cccccc;
+	background : #000000;
+	border-width : 0px;
+	border-color : #000000;
+}
+
+.menu{
+	font-family: Verdana;
+	font-size:12px;
+	color: #cccccc;
+	border: 1px solid #666666;
+}
+/*
+.button_old{
+	font-size: 10px;
+	font-family: Arial;
+	width: 60;
+	height:18;
+	background-color: #000000;
+	color: #FF0000;
+}
+*/	
+.button {
+	-moz-box-shadow:inset 1px 1px 1px 0px #474747;
+	-webkit-box-shadow:inset 1px 1px 1px 0px #474747;
+	box-shadow:inset 1px 1px 1px 0px #474747;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #000000), color-stop(1, #731010) );
+	background:-moz-linear-gradient( center top, #000000 5%, #731010 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#731010');
+	background-color:#000000;
+	-moz-border-radius:20px;
+	-webkit-border-radius:20px;
+	border-radius:20px;
+	border:1px solid #ffffff;
+	display:inline-block;
+	color:#d6d6d6;
+	font-family:Verdana;
+	font-size:10px;
+	font-weight:bold;
+	padding:4px 20px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #000000;
+	min-width:70px;
+	margin: 1px;
+}.button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #731010), color-stop(1, #000000) );
+	background:-moz-linear-gradient( center top, #731010 5%, #000000 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#731010', endColorstr='#000000');
+	background-color:#731010;
+}.button:active {
+	position:relative;
+	top:1px;
+}
+
+
+.button_small{
+	font-size: 10px; 
+	width:20; 
+	height:20; 
+	font-family: Arial; 
+	background-color: #000000; 
+	color: Red;
+}
+
+.button_red{
+	font-size: 10px; 
+	width:20; 
+	height:20; 
+	font-family: Arial; 
+	background-color: #AA0000; 
+	color: #FFFFFF;
+}
+
+.button_over{
+	font-size: 10px;
+	font-family: Arial;
+	width: 60px;
+	height:18;
+	background-color: #555555;
+	color: #FFFFFF;
+}
+
+.button_large{
+	font-size: 10px;
+	font-family: Arial;
+	width: 110px;
+	background-color: #000000;
+	color: #FF0000;
+}
+
+.button_large_over{
+	font-size: 10px;
+	font-family: Arial;
+	width: 110px;
+	background-color: #DDDDDD;
+	color: #FF0000;
+}
+
+.button_auto{
+	font-size: 10px;
+	font-family: Arial;
+	/*width: 110px;*/
+	background-color: #000000;
+	color: #FF0000;
+}
+
+.button_auto_over{
+	font-size: 10px;
+	font-family: Arial;
+	/*width: 110px;*/
+	background-color: #DDDDDD;
+	color: #FF0000;
+}
+
+.textarea_max{
+	width: 100%;	
+	font-size:9px;
+	background-color: #500D0D;
+	color: #FFFFFF;
+	font-family: Verdana;		
+}
+
+.textarea_min{
+	width: 250px;	
+	font-size:9px;
+	background-color: #500D0D;
+	color: #FFFFFF;
+	font-family: Verdana;		
+}
+
+.bordo_outline{		
+	border-left: 1px solid #666666;
+	border-right: 1px solid #666666;
+	border-bottom: 1px solid #666666;   
+	background-repeat: no-repeat; 
+	background-position: center; 
+}
+
+.fieldset{
+	border: 1px solid #cccccc;	
+	width: 100%;
+	align: center;
+}
+
+.legend{
+	font-size: 11px; 
+	font-family: Verdana;		
+	color: #cccccc;
+}
+
+#estratta{
+	
+	float: right;
+	align: right;
+	margin: 20px;
+	padding: 20px;
+	
+}
+
+table.zebra{
+	
+	width: 100%;
+	
+	
+}

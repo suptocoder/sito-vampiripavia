@@ -1,0 +1,904 @@
+{
+  "characters": [
+    {
+      "id": "a",
+      "matrix_user_id": "@a:local",
+      "display_name": "A",
+      "mental_points": 5,
+      "is_staff": false,
+      "legacy_user_id": 1001,
+      "clan": "lasombra",
+      "notes": "Obfuscate test character",
+      "status": "Neonato",
+      "citta": "Pavia",
+      "natura": "Ambizioso",
+      "gen": 8,
+      "umanita": 4,
+      "men_max": 5,
+      "fis": 3,
+      "fis_max": 4,
+      "soc": 4,
+      "soc_max": 5,
+      "blood": 8,
+      "bloodmax": 10,
+      "will": 6,
+      "willmax": 7,
+      "beast": 2,
+      "salute": "Illeso",
+      "px_banca": 120,
+      "px_spesi": 95,
+      "tempo_px": 60,
+      "delayXP": 0,
+      "abilita": [
+        [
+          "Furtivita",
+          4
+        ],
+        [
+          "Rissa",
+          3
+        ],
+        [
+          "Occulto",
+          2
+        ],
+        [
+          "Schivare",
+          3
+        ]
+      ],
+      "disciplines": {
+        "Ottenebramento": [
+          "Sudario della notte",
+          "Braccia degli abissi"
+        ],
+        "Dominazione": [
+          "Comando",
+          "Mesmerismo"
+        ]
+      },
+      "note": "Le tenebre non si nascondono: avvolgono.",
+      "danni": 0,
+      "fva": 0,
+      "fva_ts": 0,
+      "caccia_ts": 0,
+      "banca": {
+        "entrate": 5,
+        "uscite": 2,
+        "spesi": 0,
+        "time": 0
+      },
+      "inventario": [
+        {
+          "nome": "Pugnale rituale",
+          "tipo": "bianca"
+        },
+        {
+          "nome": "Sigillo di famiglia",
+          "tipo": "oggetto"
+        }
+      ]
+    },
+    {
+      "id": "b",
+      "matrix_user_id": "@b:local",
+      "display_name": "B",
+      "mental_points": 5,
+      "is_staff": false,
+      "legacy_user_id": 1002,
+      "clan": "tremere",
+      "notes": "Auspex test character",
+      "status": "Neonato",
+      "citta": "Pavia",
+      "natura": "Curioso",
+      "gen": 8,
+      "umanita": 5,
+      "men_max": 6,
+      "fis": 2,
+      "fis_max": 3,
+      "soc": 3,
+      "soc_max": 4,
+      "blood": 7,
+      "bloodmax": 10,
+      "will": 7,
+      "willmax": 8,
+      "beast": 1,
+      "salute": "Illeso",
+      "px_banca": 140,
+      "px_spesi": 110,
+      "tempo_px": 60,
+      "delayXP": 0,
+      "abilita": [
+        [
+          "Occulto",
+          4
+        ],
+        [
+          "Investigazione",
+          3
+        ],
+        [
+          "Accademiche",
+          3
+        ]
+      ],
+      "disciplines": {
+        "Auspex": [
+          "Scrutare nelle Ombre",
+          "Ascoltare il silenzio"
+        ],
+        "Taumaturgia": [
+          "Manipolazione del sangue"
+        ]
+      },
+      "note": "Ogni segreto ha un prezzo, ed io tengo i registri.",
+      "danni": 0,
+      "fva": 0,
+      "fva_ts": 0,
+      "caccia_ts": 0,
+      "banca": {
+        "entrate": 6,
+        "uscite": 3,
+        "spesi": 0,
+        "time": 0
+      },
+      "inventario": [
+        {
+          "nome": "Grimorio annotato",
+          "tipo": "oggetto"
+        },
+        {
+          "nome": "Pugnale d argento",
+          "tipo": "bianca"
+        }
+      ]
+    },
+    {
+      "id": "c",
+      "matrix_user_id": "@c:local",
+      "display_name": "C",
+      "mental_points": 5,
+      "is_staff": false,
+      "legacy_user_id": 1003,
+      "clan": "toreador",
+      "notes": "Visible observer character",
+      "status": "Neonato",
+      "citta": "Pavia",
+      "natura": "Edonista",
+      "gen": 9,
+      "umanita": 6,
+      "men_max": 4,
+      "fis": 2,
+      "fis_max": 3,
+      "soc": 5,
+      "soc_max": 6,
+      "blood": 7,
+      "bloodmax": 10,
+      "will": 5,
+      "willmax": 6,
+      "beast": 1,
+      "salute": "Illeso",
+      "px_banca": 80,
+      "px_spesi": 60,
+      "tempo_px": 60,
+      "delayXP": 0,
+      "abilita": [
+        [
+          "Empatia",
+          4
+        ],
+        [
+          "Espressione",
+          4
+        ],
+        [
+          "Etichetta",
+          3
+        ]
+      ],
+      "disciplines": {
+        "Presenza": [
+          "Sguardo terribile"
+        ],
+        "Celerita": [
+          "Grazia felina"
+        ]
+      },
+      "note": "La bellezza e lunica eternita concessa ai dannati.",
+      "danni": 0,
+      "fva": 0,
+      "fva_ts": 0,
+      "caccia_ts": 0,
+      "banca": {
+        "entrate": 4,
+        "uscite": 2,
+        "spesi": 0,
+        "time": 0
+      },
+      "inventario": [
+        {
+          "nome": "Ventaglio dipinto",
+          "tipo": "oggetto"
+        }
+      ]
+    },
+    {
+      "id": "staff",
+      "matrix_user_id": "@staff:local",
+      "display_name": "Staff",
+      "mental_points": 5,
+      "is_staff": true,
+      "legacy_user_id": 1,
+      "clan": "master",
+      "notes": "Debug observer",
+      "status": "Narratore",
+      "citta": "",
+      "natura": "Custode",
+      "gen": 1,
+      "umanita": 10,
+      "men_max": 10,
+      "fis": 10,
+      "fis_max": 10,
+      "soc": 10,
+      "soc_max": 10,
+      "blood": 20,
+      "bloodmax": 20,
+      "will": 10,
+      "willmax": 10,
+      "beast": 0,
+      "salute": "Illeso",
+      "px_banca": 0,
+      "px_spesi": 0,
+      "tempo_px": 60,
+      "delayXP": 0,
+      "abilita": [],
+      "disciplines": {},
+      "note": "Osserva. Annota. Giudica.",
+      "danni": 0,
+      "fva": 0,
+      "fva_ts": 0,
+      "caccia_ts": 0,
+      "banca": {
+        "entrate": 0,
+        "uscite": 0,
+        "spesi": 0,
+        "time": 0
+      },
+      "inventario": []
+    }
+  ],
+  "character_powers": [
+    {
+      "character_id": "a",
+      "power_code": "obf2"
+    },
+    {
+      "character_id": "b",
+      "power_code": "aus2"
+    }
+  ],
+  "rooms": [
+    {
+      "id": "1",
+      "name": "Via Raselli",
+      "matrix_room_id": "",
+      "adjacent": [
+        "21",
+        "69",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "descrizione": "Corso principale del Centro storico in nome di Eduardo RaÍ±±¤°¥±±ÕÍÑÉµ¥¼¡µ½±Ñ¼¡ÑÑ¼ÁÈÁÉ½Ù¥¹¥v\u0005&f\u0017fW&FR\u0006â\u0007FV×\u0006ò\u0006F\u0006wVW'&\u0012â\u0004ÆR\u0007fWG&æR\u0006F\u0005f\u0012\u0005&\u00176VÆÆÈ\u001cÛÛÈ\u001bÝ\u0019H\u001c\u0019\\\u001b\u0019H\u001b\u001bÜÈ\u0019ÜYH\u0019H\u001aH\u001bX\\Ú\u001aH\u0019\u001aH\u0018Ú\u0019H\u001c\\Ú\\Ý\u001bÛç indenni alla crisi degli ultimi tempi. Un amplio parcheg¥¼Áµ¹Ñ¼É¹Á½ÍÍ¥¥±¥°½±±µ¹Ñ¼±±Ñ¹vVç¦\u0016ÆR\u0006R\u0006Æ\u0012\u0006fW&Ö\u0017F\u0012\u0006FVÆÆ\u0012\u0006ÖWG&ò\u0006v\u0017&\u0016çF66R\u0006Âv\u001666W76ò\u0006\u0016\tÛ\u001bØØ[\u001aH\u001c\u001dX\u001aXÚH\u001c\u001a]H\u001a[\u0019\u0019[\u001b\u0018H\u0014\u001cÝ[ÚXK\u0012H\u001bYÛÞH\u0019Ù[\\[\u001bgente osservano gli orari di apertura sino alle 20 di sera¸"
+    },
+    {
+      "id": "2",
+      "name": "Palazzo Rubini",
+      "matrix_room_id": "",
+      "adjacent": [
+        "8",
+        "1"
+      ],
+      "descrizione": "Palazzo Rubini è uno storico palazzo dell'800 ora sede de±¤Õ¥¤½µÕ¹±¤¸\u0014Í½ÉÙ±¥Ñ¼½ÍÑ¹Ñµ¹Ñ±µvæò\u0006GVR\u0007\u0006\u0017GGVvÆR\u0006F\u0007\u0006öÆ¦\u0012\u0006R\u0006æ\u0017GW&\u0016ÆÖVçFR\u000e\u00066W6ò\u0006\u0016Â\u0007\u0007YØ\u001aXÛÈ\u001a[\u001bÜ\\H\u001cÙ\\[\u001aKB\u0018H\u0019XØÚX]\u0018H:\b\u0019\u001aH\u001c\u001cÜ\u001bÜ[ÛH\u0018\\goniose, ripartita in tre ordini di finestre dalle corniciµÉÁ¥¹¼¸%°Á½ÉÑ±¹ÑÉ±°ÑÕÑÑ¼ÍÍÑ¼°½±¥éêv\u0012\u0006Æ\u0012\u00076ÖÖWG&\u0012\u0006FVÂ\u0007\u0007&÷7\u0006WGFòàÐ "
+    },
+    {
+      "id": "3",
+      "name": "Hotel Due Torri",
+      "matrix_room_id": "",
+      "adjacent": [
+        "10",
+        "1"
+      ],
+      "descrizione": "In un vecchio vicolo del centro storico di Rivaverde, si ÑÉ½Ù°!½Ñ°\u0011ÕQ½ÉÉ¤°Í¥ÑÕÑ¼¥¸Õ¸¹Ñ¥Á±éé¥¹vöÆ÷\"\u0007\u0006\u0016ææ\u0012Â\u0007&V6VçFVÖVçFR\u0006R\u0006fæVÖVçFR\u0007&7G'WGGW&\u0017F\u0012â\u0004æöæ÷9Ý\u0018[\u0019H\u001cÚH\u001d\u001cÝH\u001a[\u001c\u001aY[È\u0018Ù[\u001cË\b\u0018H\u0019\u001dYH\u001c\u0018\\ÜÚH\u0019\u0018H\u001dXH\u0014][\u001b'i, questa via è molto tranquilla e silenziosa, ideale per¡¤ÙÕ½±É¥Á½ÍÉÍ¤°ÑµÁ¼ÍÑÍÍ¼Ù¥Í¥ÑÉ±±±êw¦R\u0006\u0017'F7F6R\u0006R\u00077F÷&6R\u0006FVÂ\u00066VçG&ò\u0006F\u0005&f\u0017fW&FRà"
+    },
+    {
+      "id": "4",
+      "name": "Teatro Rubini",
+      "matrix_room_id": "",
+      "adjacent": [
+        "1"
+      ],
+      "descrizione": "Il Teatro Comunale Rubini si trova all'interno della cintµÕÉÉ¥°¹ÑÉ¼ÍÑ½É¥¼¤I¥ÙÙÉÍÔY¥IÍ±±¤ºpÐ¤Â\u0005FV\u0017G&ò\u0005'V&æ\u0006gR\u0006æ\u0017VwW&\u0017Fò\u0006Â\u0003\u0013R\u0006\u0016v÷7Fò\u0006FVÂ\u0003\u0013CbÂ\u0007IÜH\u0018[H\u0019\u001bÜ\u001bÈ\u001b\tÚ[^[È\u0019\u0019ZH\u001b\u0018]ÜH\u001c\u001cÙÙ]\u001d\u0018]\u001aH\u0019\u0018[\u001b\tØXÚ\u001a]\u0019]\u001d'o Vincenzo Ghinelli.\r\nSubito si distinse per la rappresenÑé¥½¹±±µ¥±¥½É¤ÁÉ½Õé¥½¹¤ÉµµÑ¥¡±¥É¥¡°wFW7FÖöæ\u0017FR\u0006F\u0016ÆÆ\u0012\u0007\u0007&W6Vç¦\u0012\u0006F\u0007\u0007&W7Fv÷6\u0006çFW'\u0007&WF\u0006F\u0019Û\u001aX[H\u0019\u0019[\b\u001c\u0019\\[Ù\u001bË\u0012[\b\u001d\u0019X]\u001cÈ\u0019H\u0019\u0019Y\u001aXØ]\u001bÈ\u0018[\b\u0019Ü[\u0019H\u001c\u001bÛ\u001a]\u001agco di Rivaverde Rubini Mattia.\r\nÈ membro del circuito ita±¥¹¼±±MÑÉ\u0015ÕÉ½Á¤QÑÉ¤MÑ½É¥¤¸4)%°QÑÉ¾r\u0005'V&æ\u000e\u0006F\u00066\u0017&\u0012\u0006FW&f\u0017¦öæR\u0002'\u0006W&Ö\u0017&æ\u0016æ\u0012#¢\u0006Æ\u0012\u0006f\u001666Ø]\u0018H\u001c\u001c\\Ù[\u0018H\u001d[\u001c\u001bÜ\u001aXÛÈ\u001a[\u0018YÛ]\u001bÈ\u0018[\b\u001c\u001c[[È\u001bÜ\u001a[K\b\u0018ÛÛ\u001bÛ§nato ionico al secondo ordine e una ricca decorazione ad ½ÁÉ°ÁÙÍ\u001d½¤\u0015¹É¥¼¸MÕ±±¥ÑÍ¤ÑÉ½Ù¹¼w6WGFR\u0006fwW&R\u0006ÖFöÆöv6R\u0007&\u001666W6R\u0006â\u0007&\u0017V\u0016G&¢\u0004W&6öÆR\u0006FÛÈ\u0019\u0019[\u001b\u0018H\u0019ÜK\b\u0010Ø[\u001b\u001a[Ü\u0019H\u001b]\\ØH\u0019\u0019[\b\u001c\u001bÙ[XH\u0019\\ÚXÛË\b\u0015[\\H\u0019\u0019Xg dell'amore, Apollo dio delle arti, Talia musa della comm¥°5±Á½µ¹µÕÍ±±ÑÉ¥°\r±¥¼µÕÍ±±ÍÑ½Êv\u0012Â\u0006R\u0007Vâ\u0007F×\u0006\u0016æò\u0007G&\u0016ævöÆ\u0017&R\u00066öâ\u0006Âv\u0016ÆÆVv÷&\u0012\u0006FVÂ\u00056\u0017fò\u0006R\tÙ\u0019[\b\u0014XXÛÛK\b\u0019H\u001b\u001bÈ\u001cÝ\u0019[[XH\u0019\u0019[\u001b\u0018H\u0018Ú]\u001d8\b\u0018[\b\u0018Ù[\u001cË\u0014Ý[\b\u0019X[§co destro sono poste due formelle con Tersicore e Bacco, ½Ï°½µÍÔÅÕ±±¼Í¥¹¥ÍÑÉ¼½¸A½±¥¹¹¥°¤¹Õ½Ù¼°\tv66òàÐ Ð¤æw&W76ò\u0003¢\u0003\u0013\u0006WW&ðÐ¥&F÷GFó¢\u0003\u0013R\u0006WW&ðÐ Ð¤Â\u0007FV\u0017G&ùÈ:\b\u0018\\\u0019\\\u001bÈ\u001bÙÛH\u0019Ú[ÝY;\b\u0019\u0018H\u001cÙ]\u001d\u0019[XH\u0018Y\b\u0018\\\u001c[\u0019H\u0018ÛÛ\u001d[H\u001b[çva piece teatrale."
+    },
+    {
+      "id": "5",
+      "name": "L'oro e L'argento",
+      "matrix_room_id": "",
+      "adjacent": [
+        "16",
+        "1"
+      ],
+      "descrizione": "Noto cafè chic della città. Ristrutturato post guerra e sÕÍÍ¥Ùµ¹Ñ¹±¤Õ±Ñ¥µ¤¹¹¤Á½ÉÑÑ¼±±É¥±ÑwVæ\u0012\u0006çV÷f\u0012\u0006vW7FöæRÂ\u0007\u0017VW7Fò\u00066\u0016n\u0006gVævR\u0006F\u0012\u0006ÇVövò\u0006F\u0007&G&÷fùÈ\u001c\u0019\\\u001b\tØ[\u001d\u0018H\u001cÛØÚY]8\b\u0019H\u001b\u0018H\u0019Ù[\u0019H\u0019\u0018X[K\u0015[H\u0019Ü[\u0019H\u001d]\u001c]'a si sporge su Via Raselli e mette in mostra tavolini di ÙÑÉ¼ÉÉ¼ÑÑÕÑ¼¡¥Í±½¹Õ¤½±½É¤±¤¸\u0016rr\u0007Vâ\u0006×W7B\u0007\u0006W\"\u0006vÆ\u0006\u0017\u0006W&Ff\u0006R\u0006vÆ\u0006\u0017\u0007\u0007\u0006÷W\"àÐ¤Rr\u0006f\u00166ÆR\tÚ[ÛÛ\u001c\\H\u0015T\u0014È\u001a[\u001c]Y\\Ý\u001bÈ\u0018ØYº\b\u0019\u0019[\u001b\u0018H\u001c\u001cÝ[ÚXH\u0019\u0018[\b\u0019\\ØÚ[§o parigino."
+    },
+    {
+      "id": "6",
+      "name": "Cattedrale San Michele",
+      "matrix_room_id": "",
+      "adjacent": [
+        "17",
+        "1"
+      ],
+      "descrizione": "L'esterno dell'edificio colpisce per la sobrietà tipicame¹ÑÉ½µ¹¥°¥¸±ÑÉ¥é¥¼°½¸½ÑÑ¼±Í¹É½µÁÉ±vÖöæ÷Föæ\u0012\u0006FVÆÆ\u0012\u0006f\u001666\u0017F\u0012â\u0004Æ\u0012\u0007\u0006\u0017'FR\u00077W\u0006W&÷&RÂ\u0006F\u0006\u001766VæFVéÞH\u001d[]\u0018H\u001c\u001c\\Ù[\u0018H\u001d[\u0019Û\u001bÛH\u001d\u001cX[ÛÛ\u0018\\K\b\u0019\u001dYH\u001d\u001a[\\\u0018[H\u001cçemicircolari e due pilastrini; al centro si trova una copÁ¥¤±Í¹½É¹Ñ½¸Õ¸½¡¥¼½É¹Ñ¼¤É¥¼ÍÊv\u0016fæàÐ¤\u0012\u00076æ7G&\u0012\u0006FVÆÆ\u0012\u00046\u0017GFVG&\u0016ÆRÂ\u0006æfæRÂ\u0007G&÷f\u0016Öò\u0007Væ\u0019È\u001cÝ\u0018]\u001dXH\u001a[\u0018ÛÈ\u0019\u001aH\u0014Ø[\u0013ZXÚ\u0019[\u0019K\b\u0019\u0019YÛ\u001aH\u0018[H\u001bÝ\u001d\u0018[\u0018K"
+    },
+    {
+      "id": "7",
+      "name": "Commissariato Spagnoli",
+      "matrix_room_id": "",
+      "adjacent": [
+        "20",
+        "19",
+        "18",
+        "1"
+      ],
+      "descrizione": "In uno dei palazzi storici nei dintorni di Via Raselli si¥Õ¹¥¹Í¹ÉÁÁÉÍ¹Ñ¹Ñ±¼ÍÕ¼±±Á½±¥êv\u0012\u0006F\u00057F\u0017Fòâ\u00056÷GFò\u0006W76\u0012\u00066\u0017\u0006Vvv\u0012\u0006Æ\u0012\u000767&GF\u0012\t5\u0006öÆ¦\u0019Bâ\u0004ÂyÙY\u001aYXÚ[È:\b\u0018Û\u0018\\ÜÚXØ[Y[\u0019H\u001bÝ\u001d\u001bØÙ[\u0019\\ØÛÈ\u001cÙX[H\u0018[\u0018Ý[H\u0019[gstre ai piani superiori siano state sbarrate con barre di¡¥Í¸\u0019Õ½É¤±°¥¥¥¼Í½¹¼½ÍÑ¹Ñµ¹ÑÁÉ¡¥wFR\u0006FVÆÆR\u0007fWGGW&R\u0006FVÆÆ\u0012\u0005\u0006öÆ¦\u0012àÐ"
+    },
+    {
+      "id": "8",
+      "name": "Pian Terreno",
+      "matrix_room_id": "",
+      "adjacent": [
+        "2"
+      ],
+      "descrizione": "Uno scalone monumentale, dalle pareti e soffitto decorati½¸¥ÕÉ±ÍÍ¥¡¤Í¹¹éÉ¥¹Í¥µ¹Ñ±°½¹Öv6R\u0006\u0016Â\u0007\u0006\u0016æò\u0006æö&ÆS¢\u0006ÆR\u0007\u0006\u0017&WF\u00076öæò\u0006Ö÷fÖVçF\u0017FR\u0006F\u0012\u0007\u00076WVFòÙÛXØÚ\u001aYH\u001c]\u001d\u0018[ÛÛ\u0018\\H\u001a[]XY\u001c]\u0019H\u0019\u0018H\u001c\u001a[\u0018\\Ý\u001cH\u001a[ÛXÚNÛ[\u001b\tØgpertura ovale centrale della volta, che allude ad una cup½±µÉµ½ÉÑÉ½ÉÑ° ¥Á¥¹Ñ¼¥°QÉ¥½¹¼¤Y¹É¸"
+    },
+    {
+      "id": "10",
+      "name": "Hall Due Torri",
+      "matrix_room_id": "",
+      "adjacent": [
+        "3"
+      ],
+      "descrizione": "Il mastro ingresso porta ad una amplia hall dal gusto modÉ¹¼¥¸¹ÑÑ¼½¹ÑÉÍÑ¼½¸±ÍÑ½É¥¥Ó°Á±éé¼vÆÆR\u0007fR\u00066&6÷7F\u0016çFâ\u0004Â\u0007\u0006\u0017fÖVçFò\u000e\u0006F\u0006Ö\u0017&Öò\u0006ÇV6Fò\u0006R\u0007\u0006öÉÝ\u001cÛÚ[H\u001a[\u001c\u0019[\u001b\u0019H\u0018XØÛÛ\u0019ÛÛÈ\u001aH\u001d\\Ú]\u0018]\u001bÜH\u001a[\u001d[H\u0018]\u001b[ÜÙ\\g di lusso e agio. Innumerevoli faretti dalla luce calda i±±Õµ¥¹¹¼±Í±°½¹ÑÉ½Í½¥ÑÑ¼É¹¼Õ¹±Õ¡r\u0007&VæFR\u0006Âv\u0016Ö&VçFR\u0006\u0016æ6÷&\u0012\u0007\u0006R\u0006\u001666övÆVçFRàÐ©4æVÆÂv÷FVÂ\u0006GYÙH\u0015\u001bÜK\b\u001c\u001cÙ\\ÜÚ[Û[\u001a]8\b\u0019H\u0019\u001a\\ØÜ^[ÛH\u001cÛÛÈ\u001b\u0018H\u001bÜÝ\u001cH\u0019\\§ma"
+    },
+    {
+      "id": "16",
+      "name": "Retrobottega Oro Argento",
+      "matrix_room_id": "",
+      "adjacent": [
+        "5"
+      ]
+    },
+    {
+      "id": "17",
+      "name": "Sagrestia",
+      "matrix_room_id": "",
+      "adjacent": [
+        "6"
+      ]
+    },
+    {
+      "id": "18",
+      "name": "Gabbiotto",
+      "matrix_room_id": "",
+      "adjacent": [
+        "7",
+        "19",
+        "20"
+      ]
+    },
+    {
+      "id": "19",
+      "name": "Uffici Spagnoli",
+      "matrix_room_id": "",
+      "adjacent": [
+        "18"
+      ]
+    },
+    {
+      "id": "20",
+      "name": "Celle",
+      "matrix_room_id": "",
+      "adjacent": [
+        "18"
+      ]
+    },
+    {
+      "id": "21",
+      "name": "Tangenziale",
+      "matrix_room_id": "",
+      "adjacent": [
+        "59",
+        "49",
+        "35",
+        "22",
+        "1"
+      ]
+    },
+    {
+      "id": "22",
+      "name": "Porta S Isaia",
+      "matrix_room_id": "",
+      "adjacent": [
+        "23",
+        "21"
+      ]
+    },
+    {
+      "id": "23",
+      "name": "Strada del Parco",
+      "matrix_room_id": "",
+      "adjacent": [
+        "28",
+        "27",
+        "24",
+        "22"
+      ]
+    },
+    {
+      "id": "24",
+      "name": "Parco Al Lago",
+      "matrix_room_id": "",
+      "adjacent": [
+        "26",
+        "25",
+        "23"
+      ]
+    },
+    {
+      "id": "25",
+      "name": "Ristopub",
+      "matrix_room_id": "",
+      "adjacent": [
+        "24"
+      ]
+    },
+    {
+      "id": "26",
+      "name": "Veranda",
+      "matrix_room_id": "",
+      "adjacent": [
+        "24"
+      ]
+    },
+    {
+      "id": "27",
+      "name": "Campus Universitario",
+      "matrix_room_id": "",
+      "adjacent": [
+        "32",
+        "31",
+        "30",
+        "29",
+        "23"
+      ],
+      "descrizione": "Situato a 8 Km a nord ovest dal centro di Rivaverde, il cµÁÕÌÕ¹¥ÙÉÍ¥ÑÉ¥¼U¹¥I¥ÙÍ½É¥¸Õ¸½¹ÑÍÑ¼Í¥¹½É¥²vRÂ\u0006ÖÖW'6ò\u0006æVÂ\u0007fW&FR\u0006FVÂ\u0005\u0006\u0017&6ò\u0005&Vvæ\u0012\u0005fGF÷&\u0012àÐ¤Â\u00066ö×\u0006ÉÙ\\ÜÛÈ:\b\u0018ÛÜÝ\u001a]\u001dZ]\u001bÈ\u0019\u0018H\u001d\\H\u0019Y\u001aYXÚH\u001a[\u001bX]\u001d\u001bÛÚ[H\u001cÜÜÚK\u0010\\§rivando dalla strada provinciale si arriva al parcheggio ¤Ù¥Í¥ÑÑ½É¤ÍÕ°ÅÕ±Í¤¥°¥¥¥¼¥¸Õ¤Í¾væò\u0007\u0007&W6VçF\u0006Æ\u0012\u0007&V6W\u0007FöâÂ\u0006vÆ\u0007Vff6\u0006R\u0006Æ\u0012\u00076Vw&WFW&\u0012â\u0004FYÝ\u001cÈ\u001c]Y\\Ý\u001bÈ\u0019Y\u001aYXÚ[È\u001cÚH\u001d\u001cÝH\u001a[\b\u0018Ý[ÜH\u0019\u0019[\b\u0018ÛÛ\\\u001b\u0019\\ÜÛÎ\u001d[Øgrea attrezzata, con tavoli e panche che fungono da ritrov¼ÁÈ¤µ½µ¹Ñ¤¤ÍÙ¼°µ¹¡½Ù±¤ÍÑÕ¹Ñ¤Á½ÍÎvöæò\u00077GVF\u0017&R\u0006â\u0007G&\u0016ç\u0017VÆÆN\u0002Â\u0006ÖÖW'6\u0006æVÆÆ\u0012\u0006æ\u0017GW&\u0012â\u00057VÆÆ\u0019È\u0019\u0019\\Ý\u001cH\u0019\u0019[\b\u001c\u0018\\ÛÈ\u001b\tØ\\XH\u0019\u0019Y\u001aXØ]\u0018H\u0018ZH\u0019\u001bÜZ]\u001bÜH\u0018ÛÜÝ\u001a]\u001dZ]\u0018g da più edifici disposti a lisca di pesce. A sinistra delÁÉ¼Í½¹¼¥Í±½Ñ¤ÙÉ¤¥¥¤½ÙÍ¤ÑÉ½Ù¹¼±Õ²vRâ\u0004æVÂ\u0006Æ\u0017Fò\u0006æ÷&B\u0006FVÂ\u00066ö×\u0006ÆW76ò\u000e\u00076GV\u0017Fò\u0006Â\u0007\u0006öÆò\u00077\u0006÷'FfùË\b\u0018ÛÛ\u001d[H\u001c\u001a\\ØÚ[H\u0018ÛÜ\u0019\\\u0018K\b\u001b\u0018H\u001c\u0018[\u0019\\Ý\u001cH\u0019H\u001d\\H\u0018Ø[\\\u001aH\u0019\u0019ZH\u001c'rincipali sport."
+    },
+    {
+      "id": "28",
+      "name": "Commissariato Sottofiume",
+      "matrix_room_id": "",
+      "adjacent": [
+        "33",
+        "23"
+      ]
+    },
+    {
+      "id": "29",
+      "name": "Dormitorio",
+      "matrix_room_id": "",
+      "adjacent": [
+        "27"
+      ]
+    },
+    {
+      "id": "30",
+      "name": "Museo di storia",
+      "matrix_room_id": "",
+      "adjacent": [
+        "27"
+      ]
+    },
+    {
+      "id": "31",
+      "name": "Piscina",
+      "matrix_room_id": "",
+      "adjacent": [
+        "27"
+      ]
+    },
+    {
+      "id": "32",
+      "name": "Biblioteca",
+      "matrix_room_id": "",
+      "adjacent": [
+        "27"
+      ]
+    },
+    {
+      "id": "33",
+      "name": "Gabbiotto",
+      "matrix_room_id": "",
+      "adjacent": [
+        "28",
+        "34"
+      ]
+    },
+    {
+      "id": "34",
+      "name": "Uffici Sottofiume",
+      "matrix_room_id": "",
+      "adjacent": [
+        "33"
+      ]
+    },
+    {
+      "id": "35",
+      "name": "Piazza delle Medaglie d oro",
+      "matrix_room_id": "",
+      "adjacent": [
+        "71",
+        "41",
+        "36",
+        "21"
+      ]
+    },
+    {
+      "id": "36",
+      "name": "Stazione",
+      "matrix_room_id": "",
+      "adjacent": [
+        "37",
+        "35"
+      ]
+    },
+    {
+      "id": "37",
+      "name": "Atrio",
+      "matrix_room_id": "",
+      "adjacent": [
+        "39",
+        "38",
+        "36"
+      ]
+    },
+    {
+      "id": "38",
+      "name": "Sottopasso",
+      "matrix_room_id": "",
+      "adjacent": [
+        "40",
+        "37"
+      ]
+    },
+    {
+      "id": "39",
+      "name": "Uffici Stazione",
+      "matrix_room_id": "",
+      "adjacent": [
+        "37"
+      ]
+    },
+    {
+      "id": "40",
+      "name": "Binario",
+      "matrix_room_id": "",
+      "adjacent": [
+        "38"
+      ]
+    },
+    {
+      "id": "41",
+      "name": "Via Saturno",
+      "matrix_room_id": "",
+      "adjacent": [
+        "46",
+        "42",
+        "35"
+      ]
+    },
+    {
+      "id": "42",
+      "name": "Centro Commerciale",
+      "matrix_room_id": "",
+      "adjacent": [
+        "45",
+        "41"
+      ],
+      "descrizione": "l Centro Commerciale Le Mimose si trova nella periferia¤I¥ÙÙÉ¸\u0005ÁÉÑ¼Á½¡¤¹¹¤°¥¸Á½¼ÑµÁ¼ ¥ÙvçF\u0017Fò\u0007Væò\u0006FV\u0007\u0007&æ6\u0006\u0016Æ\u0007\u0006öÆ\u00066öÖÖW&6\u0016Æ\u0006FVÆÆ\u0012\u00066GN\u0002â\u0004ÂyÙY\u001aYXÚ[È:\b\u0019\u001aH\u0019ÜXH\u001c]\u001d\u0018[ÛÛ\u0018\\K\b\u0019\u001a\\Ü\u001bÜÝ\u001bÈ\u001cÝH\u0019\u001dYH\u001c\u001aX[H\u0018çon al centro del soffitto una grossa cupola trasparente. \u0005±°¥¹ÑÉ¹¼ Á½ÍÍ¥¥±ÑÉ½ÙÉÕ¹É¹ÙÉ¥Ó¤¹v÷¦\u00066R\u0007fVæFöæò\u0006övæ\u00076÷'F\u0012\u0006F\u0007\u0007&öF÷GFòÂ\u0006F7\u0006÷7F\u00077VÂ\u0007\u0006W&ÛY]\u001cÈ\u0019\u0019[\u001b\u0018H\u001cÝ\u001c]\u001d\u001d\\K\u0010[\b\u0018Ù[\u001cÈ\b\u0019\u0019[\u001b\tÙY\u001aYXÚ[È\u001cÚH\u001d\u001cÝH'la food court.  All'esterno sono presenti ampi parcheggi,Õ¹¼°Á¥¹¼ÑÉÉ¹¼°±ÑÉ¼°Á¥¹¼Íµ¥¹ÑÉÉÑ¼¸4(6p¢\u0004Â\u00066VçG&ò\u00066öÖÖW&6\u0016ÆR\u000e\u0006\u0017\u0006W'Fò\u0007GWGF\u0006\u0006v÷&æ\u0006F\u0016ÆÆR\u0003£\tÌ\b\u0018[\u001b\u0019H\f\fN\f\b\n\u001aH\u001bYÛÞH\u0018Ú\u001a]Y\u001bÛÈ\u0018[\u001b\u0019H\f\u000e\f\nKB"
+    },
+    {
+      "id": "43",
+      "name": "Cinema",
+      "matrix_room_id": "",
+      "adjacent": [
+        "45"
+      ],
+      "descrizione": "Vicino all'ingresso nord del centro commerciale, l'entrat°\r¥¹µ5Õ±Ñ¥Í±M\u0015ÍÁÉ¥P¸\u0005±°¥¹ÉÍÍ¼°ÍÔ¹ÑÉvÖ&\u0006\u0006Æ\u0017FÂ\u00076öæò\u0006F7\u0006÷7FR\u0006ÆR\u0006&vÆWGFW&Râ\u0004\u0016æF\u0016æFò\u0006öÇG&R\tÜÚH\u0018\\]H\u001a[\u001d[\u0018ÛÜY\u001bÚ[È\u0018[\\\u001a[È\u0018ÛÛ\u001a[\b\u001c\u0018][Y[\u001bÈ\u001a[\u001b\u001dXÚY'o marmo nero, al centro del quale si trovano i banconi chÙ¹½¹¼½¹¤Í½ÉÑ¤±½É¹¥¤Á½À½É¸ÍÕ°ÅÕ²vR\u00076\u0006\u0016ff\u001666\u0016æò\u0006ÆR\u0006VçG&\u0017FR\u0006\u0016ÆÆR\u0003\u0013\"\u00076\u0016ÆR\u00066æVÖ\u0017Föw&\u0016f6RéÃB"
+    },
+    {
+      "id": "44",
+      "name": "Food Court",
+      "matrix_room_id": "",
+      "adjacent": [
+        "45"
+      ],
+      "descrizione": "Nel centro dell'edificio, sotto la grande cupola di vetroÍ¤ÑÉ½Ù±½½½ÕÉÐ°¹ÑÉ¼½µµÉ¥±°½ÙÍ½¹¾r\u0007\u0007&W6VçF\u0007f\u0017&\u0006f\u00177B\u0006fööB\u0006R\u0007&7F÷&\u0016çF\u0007F\u00066\u0006VB\u0006WFæ6\u0006\u0012\tØ[Û\u001bY\\Ø]\u001bË\u0003BBÛÜû\b\u0018ÛÛYH\u001a[\b\u0018Ú[[XK\b\u0018[Ú\u0019H\u0019Û\u001aH\u0019\\Ù\\Ú^g commerciali presenti in questa area sono aperti tutti i ¥½É¹¤±±äèÀÀ±±ÀÄèÀÀ¸"
+    },
+    {
+      "id": "45",
+      "name": "Shopping Town",
+      "matrix_room_id": "",
+      "adjacent": [
+        "43",
+        "44",
+        "42"
+      ],
+      "descrizione": "Lungo tutto il perimetro dell'edificio, si trovano numeroÍ¤¹½é¤°ÁÈ±µ¥½ÈÁÉÑÙÍÑ¥É¥¼µµ¥¹¥±¤ÑÖwGFR\u0006ÆR\u0007\u0007&æ6\u0006\u0016Æ\u0006Ö\u0017&6Râ\u0005GWGF\u0006\u0006æVv÷¦\u00066VFöæò\u0006\u0016ÆÆR\u0006÷)ÙH\f\u000e\f\b\u001bXH:\b\u001c\u001bÜÜÚX[\u0019H\u001c\u0018\\ÜÙYÙÚX\\H\u001b\u001d[ÛÈ\u001a[\b\u0018Ù[\u001cÈ\u0018ÛÛ[Y\\§ciale fino alle ore 01:00 per ammirare le splendide vetri¹"
+    },
+    {
+      "id": "46",
+      "name": "Zona Industriale",
+      "matrix_room_id": "",
+      "adjacent": [
+        "48",
+        "47",
+        "41"
+      ]
+    },
+    {
+      "id": "47",
+      "name": "Capannone Abbandonato",
+      "matrix_room_id": "",
+      "adjacent": [
+        "46"
+      ]
+    },
+    {
+      "id": "48",
+      "name": "Capannone Abbandonato",
+      "matrix_room_id": "",
+      "adjacent": [
+        "46"
+      ]
+    },
+    {
+      "id": "49",
+      "name": "Via Euterpe",
+      "matrix_room_id": "",
+      "adjacent": [
+        "56",
+        "55",
+        "50",
+        "21"
+      ]
+    },
+    {
+      "id": "50",
+      "name": "Ospedale Maggiore",
+      "matrix_room_id": "",
+      "adjacent": [
+        "51",
+        "49"
+      ]
+    },
+    {
+      "id": "51",
+      "name": "Accettazione",
+      "matrix_room_id": "",
+      "adjacent": [
+        "54",
+        "53",
+        "52",
+        "50"
+      ]
+    },
+    {
+      "id": "52",
+      "name": "Reparto",
+      "matrix_room_id": "",
+      "adjacent": [
+        "51"
+      ]
+    },
+    {
+      "id": "53",
+      "name": "Pronto Soccorso",
+      "matrix_room_id": "",
+      "adjacent": [
+        "51"
+      ]
+    },
+    {
+      "id": "54",
+      "name": "Obitorio",
+      "matrix_room_id": "",
+      "adjacent": [
+        "51"
+      ]
+    },
+    {
+      "id": "55",
+      "name": "Cimitero Urbano",
+      "matrix_room_id": "",
+      "adjacent": [
+        "49"
+      ]
+    },
+    {
+      "id": "56",
+      "name": "Abazia del Monte",
+      "matrix_room_id": "",
+      "adjacent": [
+        "58",
+        "57",
+        "49"
+      ]
+    },
+    {
+      "id": "57",
+      "name": "Chiesa",
+      "matrix_room_id": "",
+      "adjacent": [
+        "56"
+      ]
+    },
+    {
+      "id": "58",
+      "name": "Laboratorio Frati",
+      "matrix_room_id": "",
+      "adjacent": [
+        "56"
+      ]
+    },
+    {
+      "id": "59",
+      "name": "Strada Provinciale",
+      "matrix_room_id": "",
+      "adjacent": [
+        "68",
+        "64",
+        "60",
+        "21"
+      ]
+    },
+    {
+      "id": "60",
+      "name": "Motel Ferri",
+      "matrix_room_id": "",
+      "adjacent": [
+        "63",
+        "62",
+        "61",
+        "59"
+      ]
+    },
+    {
+      "id": "61",
+      "name": "Camera 1",
+      "matrix_room_id": "",
+      "adjacent": [
+        "60"
+      ]
+    },
+    {
+      "id": "62",
+      "name": "Camera 2",
+      "matrix_room_id": "",
+      "adjacent": [
+        "60"
+      ]
+    },
+    {
+      "id": "63",
+      "name": "Camera 3",
+      "matrix_room_id": "",
+      "adjacent": [
+        "60"
+      ]
+    },
+    {
+      "id": "64",
+      "name": "Sanatorio Abbandonato",
+      "matrix_room_id": "",
+      "adjacent": [
+        "65",
+        "59"
+      ]
+    },
+    {
+      "id": "65",
+      "name": "Atrio Principale",
+      "matrix_room_id": "",
+      "adjacent": [
+        "64",
+        "66",
+        "67"
+      ]
+    },
+    {
+      "id": "66",
+      "name": "Stanze abbandonate",
+      "matrix_room_id": "",
+      "adjacent": [
+        "65"
+      ]
+    },
+    {
+      "id": "67",
+      "name": "Sotterranei",
+      "matrix_room_id": "",
+      "adjacent": [
+        "65"
+      ]
+    },
+    {
+      "id": "68",
+      "name": "Clinica Privata La Sapienza",
+      "matrix_room_id": "",
+      "adjacent": [
+        "59"
+      ]
+    },
+    {
+      "id": "69",
+      "name": "Banca",
+      "matrix_room_id": "",
+      "adjacent": [
+        "70",
+        "1"
+      ]
+    },
+    {
+      "id": "70",
+      "name": "Uffici e Cassaforte",
+      "matrix_room_id": "",
+      "adjacent": [
+        "69"
+      ]
+    },
+    {
+      "id": "71",
+      "name": "Sede Giornale La Provincia",
+      "matrix_room_id": "",
+      "adjacent": [
+        "35"
+      ]
+    }
+  ],
+  "room_presence": [
+    {
+      "character_id": "a",
+      "room_id": "1",
+      "obfuscate_level": 0,
+      "last_seen_at": "2026-06-27T00:00:00.000Z"
+    },
+    {
+      "character_id": "b",
+      "room_id": "1",
+      "obfuscate_level": 0,
+      "last_seen_at": "2026-06-27T00:00:00.000Z"
+    },
+    {
+      "character_id": "c",
+      "room_id": "1",
+      "obfuscate_level": 0,
+      "last_seen_at": "2026-06-27T00:00:00.000Z"
+    }
+  ],
+  "auspex_reveals": [],
+  "event_log": [],
+  "missive": []
+}

@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elysium</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Trebuchet MS", "Varela Round", Arial, sans-serif;
+      background: #050303;
+      color: #d8d0c5;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 300px;
+      min-height: 100vh;
+      background: #000;
+      color: #d8d0c5;
+    }
+    button, input, select { font: inherit; }
+    button, select {
+      min-height: 34px;
+      border: 1px solid #6e1d1d;
+      border-radius: 0;
+      background: linear-gradient(#250808, #080303);
+      color: #ead8b0;
+      padding: 0 10px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    button { cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0; }
+    button:hover:not(:disabled) { border-color: #a43131; color: #fff; }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    label { display: grid; gap: 5px; color: #a9957c; font-size: 12px; text-transform: uppercase; }
+    h1, h2 { margin: 0; letter-spacing: 0; }
+    h1 { color: #f2e3c2; font-size: 20px; text-transform: uppercase; }
+    h2 {
+      color: #a9a9a9;
+      font-size: 15px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(120, 28, 28, .7);
+      text-transform: uppercase;
+    }
+
+    .wrap {
+      display: grid;
+      width: min(1024px, 100%);
+      margin: 0 auto;
+      padding: 0;
+    }
+    .hero {
+      height: 191px;
+      background: url("/legacy-assets/imgs/header_login.jpg") center top / 1024px 191px no-repeat;
+    }
+    .sigil, .subtitle, .hero h1 { display: none; }
+    .body-shell {
+      min-height: 768px;
+      display: grid;
+      gap: 18px;
+      padding: 72px 84px 46px;
+      text-align: center;
+      background: #000 url("/legacy-assets/imgs/corpo_login.jpg") center top / 1024px 768px no-repeat;
+    }
+    .intro {
+      max-width: 850px;
+      margin: 0 auto;
+      color: #ddd;
+      font-size: 18px;
+      line-height: 1.2;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .intro strong {
+      display: block;
+      color: #fff;
+      font-size: 20px;
+      line-height: 1.05;
+      margin-top: 18px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 12px;
+    }
+    .main { display: grid; gap: 12px; }
+    .side { display: grid; gap: 12px; align-content: start; }
+    .bar { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .panel {
+      border: 1px solid rgba(255, 255, 255, .08);
+      background: rgba(0, 0, 0, .38);
+      padding: 12px;
+      box-shadow: inset 0 0 30px rgba(0,0,0,.55);
+    }
+    .stack { display: grid; gap: 9px; }
+    .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .person {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      min-height: 38px;
+      border-bottom: 1px solid rgba(84, 27, 27, .7);
+      padding: 6px 0;
+    }
+    .person:last-child { border-bottom: 0; }
+    .crest {
+      width: 22px;
+      height: 22px;
+      background: url("/legacy-assets/images/ank_gold_entra.jpg") center / cover;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(139, 26, 26, .55);
+    }
+    .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #eee1ca; }
+    .tags { display: flex; flex-wrap: wrap; gap: 4px; justify-content: end; }
+    .tag {
+      border: 1px solid #5f4d2d;
+      color: #d9bf78;
+      font-size: 11px;
+      line-height: 18px;
+      padding: 0 7px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      background: rgba(0,0,0,.45);
+    }
+    .tag.self { border-color: #576d3a; color: #bede89; }
+    .tag.revealed { border-color: #937238; color: #ffcf73; }
+    .tag.hidden { border-color: #7b1d2a; color: #ff9a9a; }
+    .muted { color: #9e9388; font-size: 12px; }
+    .status { min-height: 18px; color: #d9bf78; font-size: 12px; margin: 0; }
+    .log {
+      max-height: 220px;
+      overflow: auto;
+      white-space: pre-wrap;
+      font: 12px/1.4 Consolas, "Courier New", monospace;
+      color: #c9c1b8;
+    }
+    .hidden { display: none !important; }
+
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .fields { grid-template-columns: 1fr; }
+      .body-shell { padding: 36px 12px; background-size: cover; }
+      .intro { font-size: 15px; }
+    }
+    @media (max-width: 420px) {
+      .hero { grid-template-columns: 1fr; }
+      .actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <img class="sigil" src="/legacy-assets/imgs/ankh_white.png" alt="">
+      <div>
+        <h1>Elysium</h1>
+        <div class="subtitle">Matrix chamber / legacy bloodline interface</div>
+      </div>
+    </header>
+
+    <div class="body-shell">
+      <div class="intro">
+        Benvenuto nei domini di Rivaverde.<br>
+        Entra se vuoi, ma ricordati che la tenebra e sempre piu pressante, in questi luoghi.<br>
+        Devi solo rispettare alcune comuni regole di buona educazione.
+        <strong>Non offendere nessuno<br>Non usare l'identita di altre persone<br>Se qualcuno ti infastidisce rivolgiti al webmaster</strong>
+      </div>
+
+      <div class="layout">
+        <section class="main">
+          <section class="panel stack">
+            <div class="bar">
+              <h2>Presenza</h2>
+              <button id="refresh" type="button">Refresh</button>
+            </div>
+            <div class="fields">
+              <label>Character
+                <select id="who">
+                  <option value="@a:local">A</option>
+                  <option value="@b:local">B</option>
+                  <option value="@c:local">C</option>
+                  <option value="@staff:local">Staff</option>
+                </select>
+              </label>
+              <label>Room
+                <select id="room">
+                  <option value="elysium">Elysium</option>
+                  <option value="strada">Strada</option>
+                </select>
+              </label>
+            </div>
+            <div id="me" class="muted"></div>
+          </section>
+
+          <section class="panel stack">
+            <div class="bar">
+              <h2>Stanza</h2>
+              <button id="enter" type="button">Enter</button>
+            </div>
+            <div id="roster" class="stack"></div>
+          </section>
+        </section>
+
+        <aside class="side">
+          <section id="powerPanel" class="panel stack">
+            <h2>Discipline</h2>
+            <div class="actions">
+              <button id="obfuscate" type="button">Obfuscate</button>
+              <button id="appear" type="button">Appear</button>
+              <button id="auspex" type="button">Auspex</button>
+            </div>
+            <p id="status" class="status"></p>
+          </section>
+
+          <section id="staffPanel" class="panel stack hidden">
+            <h2>Registro Master</h2>
+            <div id="events" class="log"></div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const params = new URLSearchParams(location.search);
+    const initialUser = params.get("matrix_user_id") || params.get("as") || "@a:local";
+    const initialRoom = params.get("room_id") || params.get("room") || "elysium";
+    let me = null;
+
+    $("who").value = initialUser;
+    if ([...$("room").options].some((option) => option.value === initialRoom)) $("room").value = initialRoom;
+
+    const userId = () => $("who").value;
+    const roomId = () => $("room").value;
+    const hasPower = (...codes) => me && me.powers.some((power) => codes.includes(power));
+    const isHidden = () => me && me.presence && me.presence.obfuscate_level > 0;
+
+    function setStatus(text, isError = false) {
+      $("status").textContent = text || "";
+      $("status").style.color = isError ? "#ff9b9b" : "#d9bf78";
+    }
+
+    function syncUrl() {
+      const next = new URL(location.href);
+      next.searchParams.delete("as");
+      next.searchParams.set("matrix_user_id", userId());
+      history.replaceState(null, "", next);
+    }
+
+    async function api(path, options = {}) {
+      const url = new URL(path, location.origin);
+      url.searchParams.set("matrix_user_id", userId());
+      const res = await fetch(url, {
+        headers: {
+          "content-type": "application/json",
+          "x-matrix-user-id": userId(),
+        },
+        ...options,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || res.statusText);
+      return data;
+    }
+
+    function tagsFor(character) {
+      const tags = [];
+      if (character.self) tags.push(["self", "self"]);
+      if (character.revealed_by_auspex) tags.push(["revealed", "auspex"]);
+      if (character.obfuscate_level > 0) tags.push(["hidden", `hidden ${character.obfuscate_level}`]);
+      if (!character.visible && character.obfuscate_level === undefined) tags.push(["hidden", "hidden"]);
+      return tags;
+    }
+
+    function renderRoster(characters) {
+      const roster = $("roster");
+      roster.replaceChildren();
+      if (!characters.length) {
+        const empty = document.createElement("div");
+        empty.className = "muted";
+        empty.textContent = "Nessuna presenza visibile.";
+        roster.append(empty);
+        return;
+      }
+
+      for (const character of characters) {
+        const row = document.createElement("div");
+        row.className = "person";
+
+        const crest = document.createElement("span");
+        crest.className = "crest";
+
+        const name = document.createElement("div");
+        name.className = "name";
+        name.textContent = character.display_name;
+
+        const tags = document.createElement("div");
+        tags.className = "tags";
+        for (const [className, text] of tagsFor(character)) {
+          const tag = document.createElement("span");
+          tag.className = `tag ${className}`;
+          tag.textContent = text;
+          tags.append(tag);
+        }
+
+        row.append(crest, name, tags);
+        roster.append(row);
+      }
+    }
+
+    function renderMe() {
+      const room = me.presence ? me.presence.room_id : "none";
+      $("me").textContent = `${me.display_name} | men ${me.mental_points} | ${room}`;
+
+      const canObfuscate = hasPower("obf1", "obf2", "ott1", "ott2");
+      const canAuspex = hasPower("aus1", "aus2");
+      $("obfuscate").classList.toggle("hidden", !canObfuscate);
+      $("appear").classList.toggle("hidden", !canObfuscate && !isHidden());
+      $("auspex").classList.toggle("hidden", !canAuspex);
+
+      $("obfuscate").disabled = !canObfuscate || isHidden() || me.mental_points <= 1 || !me.presence;
+      $("appear").disabled = !isHidden();
+      $("auspex").disabled = !canAuspex || isHidden() || me.mental_points <= 1 || !me.presence;
+      $("powerPanel").classList.toggle("hidden", !canObfuscate && !canAuspex && !isHidden());
+      $("staffPanel").classList.toggle("hidden", !me.is_staff);
+    }
+
+    function renderEvents(events) {
+      $("events").textContent = events.map((event) => {
+        const target = event.target_character_id ? ` -> ${event.target_character_id}` : "";
+        return `${event.created_at} ${event.event_type} ${event.actor_character_id}${target}`;
+      }).join("\n") || "No events.";
+    }
+
+    async function refresh(note = "") {
+      try {
+        me = await api("/me");
+        const roster = await api(`/rooms/${roomId()}/visible-characters`);
+        renderMe();
+        renderRoster(roster.characters);
+        if (me.is_staff) renderEvents((await api("/staff/events")).events);
+        setStatus(note);
+      } catch (error) {
+        setStatus(error.message, true);
+      }
+    }
+
+    async function act(path, options = {}, done = "") {
+      try {
+        const data = await api(path, options);
+        await refresh(data.message || done);
+      } catch (error) {
+        setStatus(error.message, true);
+      }
+    }
+
+    $("refresh").onclick = () => refresh();
+    $("enter").onclick = () => act(`/rooms/${roomId()}/presence`, { method: "POST" }, "Entered room.");
+    $("obfuscate").onclick = () => act("/obfuscate", { method: "POST" });
+    $("appear").onclick = () => act("/appear", { method: "POST" }, "Visible.");
+    $("auspex").onclick = () => act("/auspex", { method: "POST" });
+    $("who").onchange = () => { syncUrl(); refresh(); };
+    $("room").onchange = () => refresh();
+
+    refresh();
+  </script>
+</body>
+</html>

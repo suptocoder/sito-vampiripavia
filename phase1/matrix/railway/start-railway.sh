@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+# First boot on a fresh volume: generate homeserver.yaml, then append the demo
+# overrides. YAML keeps the LAST occurrence of a duplicate key, so appending wins.
+if [ ! -f /data/homeserver.yaml ]; then
+  /start.py generate
+
+  {
+    printf '\n# --- vampiripavia demo overrides ---\n'
+    printf 'enable_registration: false\n'
+    if [ -n "$SYNAPSE_REGISTRATION_SHARED_SECRET" ]; then
+      printf 'registration_shared_secret: "%s"\n' "$SYNAPSE_REGISTRATION_SHARED_SECRET"
+    fi
+    # Provisioning registers 4 users and creates/joins 65 rooms in one burst,
+    # and the whole test group logs in from the same office IP.
+    printf 'rc_login:\n  address: {per_second: 100, burst_count: 100}\n  account: {per_second: 100, burst_count: 100}\n'
+    printf 'rc_registration: {per_second: 100, burst_count: 100}\n'
+    printf 'rc_joins:\n  local: {per_second: 100, burst_count: 100}\n'
+  } >> /data/homeserver.yaml
+fi
+
+exec /start.py

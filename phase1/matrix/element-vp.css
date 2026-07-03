@@ -1,0 +1,584 @@
+:root {
+  --vp-red: #8c1616;
+  --vp-red-bright: #c01818;
+  --vp-ink: #080504;
+  --vp-text: #d8d0c5;
+  --vp-muted: #9f9185;
+}
+
+body.vp-login,
+body.vp-login #matrixchat {
+  min-height: 100vh;
+  background: #000 !important;
+  color: var(--vp-text) !important;
+}
+
+body.vp-login #matrixchat {
+  position: relative;
+  overflow: auto;
+}
+
+body.vp-login #matrixchat::before,
+body.vp-login #matrixchat::after {
+  content: "";
+  position: fixed;
+  left: 50%;
+  z-index: 0;
+  width: min(1024px, 100vw);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+body.vp-login #matrixchat::before {
+  top: 0;
+  height: 191px;
+  background: url("/vp-assets/imgs/header_login.jpg") center top / 1024px 191px no-repeat;
+}
+
+body.vp-login #matrixchat::after {
+  top: 191px;
+  min-height: calc(100vh - 191px);
+  background:
+    linear-gradient(rgba(0, 0, 0, .06), rgba(0, 0, 0, .16)),
+    url("/vp-assets/imgs/corpo_login.jpg") center top / 1024px 768px no-repeat;
+}
+
+body.vp-login #matrixchat > * {
+  position: relative;
+  z-index: 1;
+}
+
+body.vp-login #matrixchat,
+body.vp-login #matrixchat > div,
+body.vp-login [class*="Auth"],
+body.vp-login [class*="Welcome"],
+body.vp-login [class*="Login"],
+body.vp-login [class*="ServerPicker"],
+body.vp-login [class*="StaticPage"] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+body.vp-login [class*="AuthPage_modal"],
+body.vp-login [class*="mx_AuthPage_modal"],
+body.vp-login [class*="mx_Welcome"] > div,
+body.vp-login [class*="mx_Login"] > div,
+body.vp-login form,
+body.vp-login [role="form"] {
+  color: var(--vp-text) !important;
+  background: rgba(7, 4, 3, .74) !important;
+  border: 1px solid rgba(148, 25, 25, .52) !important;
+  box-shadow:
+    inset 0 0 44px rgba(0, 0, 0, .72),
+    0 16px 54px rgba(0, 0, 0, .64) !important;
+}
+
+body.vp-login .mx_AuthPage {
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  padding-top: 180px !important;
+  box-sizing: border-box;
+}
+
+body.vp-login .mx_AuthPage_modal {
+  max-width: min(820px, calc(100vw - 32px)) !important;
+  transform: scale(.9);
+  transform-origin: top center;
+}
+
+body.vp-login .mx_AuthFooter {
+  display: none !important;
+}
+
+body.vp-login .mx_DefaultWelcome_logo,
+body.vp-login .mx_AuthHeaderLogo {
+  display: grid !important;
+  place-items: center;
+}
+
+body.vp-login .mx_DefaultWelcome_logo img,
+body.vp-login .mx_AuthHeaderLogo img {
+  width: 72px !important;
+  height: 72px !important;
+  padding: 18px 24px;
+  object-fit: contain;
+  border: 1px solid rgba(148, 25, 25, .62);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(160, 16, 16, .92), rgba(64, 5, 5, .94) 66%, rgba(10, 0, 0, .98)),
+    url("/vp-assets/imgs/ankh_white.png") center / 24px 50px no-repeat !important;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, .68), 0 0 22px rgba(116, 0, 0, .36);
+  content: url("/vp-assets/imgs/ankh_white.png");
+}
+
+body.vp-login h1,
+body.vp-login h2,
+body.vp-login h3,
+body.vp-login label,
+body.vp-login p,
+body.vp-login span,
+body.vp-login div {
+  color: inherit;
+}
+
+body.vp-login h1,
+body.vp-login h2 {
+  color: #e4ddd4 !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400 !important;
+  letter-spacing: 0;
+  text-shadow: 1px 1px 0 #000, 0 0 12px rgba(140, 22, 22, .52);
+}
+
+body.vp-login a {
+  color: #d65f5f !important;
+}
+
+body.vp-login input,
+body.vp-login select,
+body.vp-login textarea {
+  color: #eee5dc !important;
+  background: rgba(0, 0, 0, .52) !important;
+  border: 1px solid rgba(201, 191, 176, .22) !important;
+  box-shadow: inset 0 1px 10px rgba(0, 0, 0, .56) !important;
+}
+
+body.vp-login input::placeholder,
+body.vp-login textarea::placeholder {
+  color: #8d8379 !important;
+}
+
+body.vp-login button,
+body.vp-login [role="button"] {
+  border-radius: 2px !important;
+  font-weight: 600 !important;
+}
+
+body.vp-login button[type="submit"],
+body.vp-login button:not([aria-label]),
+body.vp-login a[role="button"] {
+  color: #fff !important;
+  border: 1px solid #5b0d0d !important;
+  background:
+    linear-gradient(180deg, var(--vp-red-bright), #7d1111 55%, #480909) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .18),
+    0 6px 18px rgba(0, 0, 0, .42) !important;
+  text-shadow: 1px 1px 0 #000;
+}
+
+body.vp-login button[type="submit"]:hover,
+body.vp-login button:not([aria-label]):hover,
+body.vp-login a[role="button"]:hover {
+  background:
+    linear-gradient(180deg, #d32424, var(--vp-red) 55%, #5b0d0d) !important;
+}
+
+body.vp-login button[aria-label],
+body.vp-login [class*="IconButton"] {
+  color: var(--vp-text) !important;
+}
+
+body.vp-login.vp-welcome #matrixchat > div {
+  min-height: 100vh;
+  padding-top: clamp(210px, 25vh, 260px);
+  box-sizing: border-box;
+}
+
+body.vp-login.vp-welcome h1 {
+  font-size: clamp(28px, 4vw, 44px) !important;
+}
+
+@media (max-width: 760px) {
+  body.vp-login #matrixchat::before {
+    height: 150px;
+    background-size: auto 150px;
+  }
+
+  body.vp-login #matrixchat::after {
+    top: 150px;
+    min-height: calc(100vh - 150px);
+    background-size: auto 768px;
+  }
+
+  body.vp-login.vp-welcome #matrixchat > div {
+    padding-top: 168px;
+  }
+
+  body.vp-login .mx_AuthPage {
+    padding-top: 140px !important;
+  }
+
+  body.vp-login .mx_AuthPage_modal {
+    transform: scale(.96);
+  }
+}
+
+body.vp-room {
+  background: #000 !important;
+  color: #ccc !important;
+}
+
+/* Element Web is just the host: hide all of its native UI; the legacy login+chat render
+   in the iframe overlay (everything below that targets .mx_* / .vp-* is now inert). */
+body.vp-app #matrixchat { display: none !important; }
+
+#vp-frame {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  border: 0;
+  margin: 0;
+  z-index: 2147483000;
+  background: #000;
+}
+
+body.vp-room #matrixchat::before {
+  content: "Aggiungete il Mezzo di trasporto nel campo RIFUGIO della Scheda! \A Piu concisi possibili, grazie! \A \A INSERIRE CORRETTAMENTE I CAMPI BG E RIFUGIO, E LA FASCIA SOCIALI IN DESCRIZIONE \A \A INVIATE I RESOCONTI!";
+  white-space: pre-line;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 340px;
+  z-index: 20;
+  height: 116px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  color: #000;
+  background: #fff url("/vp-assets/imgs/header_banner.jpg") right bottom / auto 116px no-repeat;
+  border-bottom: 1px solid #777;
+  font: 12px Arial, Helvetica, sans-serif;
+}
+
+body.vp-room .mx_LeftPanel_wrapper,
+body.vp-room .mx_LeftPanel,
+body.vp-room .mx_SpacePanel,
+body.vp-room [class*="SpacePanel"],
+body.vp-room [class*="LeftPanel"],
+body.vp-room .mx_ResizeHandle,
+body.vp-room .mx_RoomHeader,
+body.vp-room .mx_MessageComposer_e2eeIcon,
+body.vp-room .mx_MessageComposer_voiceMessageButton,
+body.vp-room .mx_MessageComposer_stickersButton,
+body.vp-room .mx_MessageComposer_formatbar,
+body.vp-room .mx_RoomView_auxPanel,
+body.vp-room .mx_RoomView_statusArea {
+  display: none !important;
+}
+
+/* ponytail: the vampiric .vp-roster IS the game roster and already hides
+   obfuscated PCs per-observer, so Element's native member list is redundant
+   here. Hide it outright to close the "dig into the member list" leak.
+   Ceiling: this only conceals membership inside THIS client. Matrix room
+   membership is protocol-level state, so a different client or the raw
+   Client-Server API still sees it; closing that would need a Synapse fork. */
+body.vp-room [class*="RightPanel"],
+body.vp-room [class*="MemberList"],
+body.vp-room [class*="MemberListView"],
+body.vp-room [class*="Facepile"],
+body.vp-room [class*="FacePile"],
+body.vp-room [class*="RoomSummaryCard"] {
+  display: none !important;
+}
+
+body.vp-room .mx_MatrixChat,
+body.vp-room .mx_RoomView,
+body.vp-room .mx_MainSplit,
+body.vp-room .mx_RoomView_body,
+body.vp-room .mx_RoomView_body .mx_AutoHideScrollbar,
+body.vp-room .mx_TimelinePanel,
+body.vp-room .mx_EventTile,
+body.vp-room .mx_EventTile_line,
+body.vp-room .mx_MessagePanel,
+body.vp-room .mx_RoomView_MessageList {
+  background: #000 !important;
+  color: #ccc !important;
+}
+
+body.vp-room .mx_MatrixChat {
+  margin: 0 !important;
+}
+
+body.vp-room .mx_RoomView {
+  margin-right: 338px !important;
+  padding-top: 116px !important;
+  border-right: 1px solid #777;
+}
+
+body.vp-room .vp-adjacent {
+  position: fixed;
+  top: 158px;
+  left: 16px;
+  z-index: 30;
+  color: #ccc;
+  font: 18px Arial, Helvetica, sans-serif;
+}
+
+/* legacy h5: grey, uppercase */
+body.vp-room .vp-heading {
+  margin-bottom: 34px;
+  font-size: 16px;
+  color: #a9a9a9;
+}
+
+/* legacy .luogo links: dark red, hover light */
+body.vp-room .vp-links {
+  line-height: 1.5;
+}
+
+body.vp-room .vp-luogo {
+  color: #761919;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+body.vp-room .vp-luogo:hover {
+  color: #ccc;
+}
+
+/* legacy XP ankh sign below the pannello buttons */
+body.vp-room .vp-ankh {
+  text-align: center;
+  padding: 8px 0 4px;
+}
+
+body.vp-room .vp-ankh img {
+  height: 46px;
+  width: auto;
+}
+
+body.vp-room .vp-location {
+  position: fixed;
+  top: 158px;
+  left: 50%;
+  z-index: 30;
+  transform: translateX(-50%);
+  color: #ccc;
+  font: 20px Arial, Helvetica, sans-serif;
+}
+
+body.vp-room .vp-entry {
+  position: fixed;
+  top: 207px;
+  left: 235px;
+  z-index: 30;
+  color: #ff9900;
+  font: 16px Arial, Helvetica, sans-serif;
+}
+
+body.vp-room .mx_TimelinePanel {
+  margin: 92px 0 92px 220px !important;
+  padding: 0 !important;
+}
+
+/* legacy chat_main.php: inline "gold-italic author - grey body", Verdana, no avatars */
+body.vp-room .mx_EventTile {
+  font: 12px Verdana, Helvetica, sans-serif !important;
+  margin: 2px 0 !important;
+  padding: 0 !important;
+}
+
+body.vp-room .mx_EventTile_avatar,
+body.vp-room .mx_EventTile .mx_BaseAvatar,
+body.vp-room .mx_EventTile_e2eIcon,
+body.vp-room .mx_MessageTimestamp {
+  display: none !important;
+}
+
+body.vp-room .mx_EventTile_senderDetailsLink,
+body.vp-room .mx_EventTile_senderDetails,
+body.vp-room .mx_DisambiguatedProfile_displayName {
+  color: #ecc01a !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+}
+
+body.vp-room .mx_EventTile_body,
+body.vp-room .mx_MTextBody {
+  color: #ccc !important;
+  font: 12px Verdana, Helvetica, sans-serif !important;
+}
+
+body.vp-room .mx_MessageComposer {
+  position: fixed !important;
+  left: 4px;
+  right: 340px;
+  bottom: 28px;
+  min-height: 70px !important;
+  background: #000 !important;
+  border-top: 1px solid #111;
+}
+
+body.vp-room .mx_BasicMessageComposer {
+  width: 375px !important;
+  min-height: 62px !important;
+  margin: 0 !important;
+  background: #000 !important;
+  border: 1px solid #111 !important;
+  color: #ccc !important;
+}
+
+body.vp-room .mx_MessageComposer_sendMessage {
+  display: none !important;
+}
+
+body.vp-room .vp-side {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 21;
+  width: 340px;
+  padding: 0;
+  box-sizing: border-box;
+  color: #ccc;
+  background: #000;
+  border-left: 1px solid #777;
+  font: 16px Arial, Helvetica, sans-serif;
+}
+
+body.vp-room .vp-meteo {
+  position: absolute;
+  top: 0;
+  left: -72px;
+  width: 72px;
+  height: 16px;
+  color: #ccc;
+  background: #000;
+  font-size: 12px;
+  text-align: center;
+}
+
+body.vp-room .vp-weather {
+  position: absolute;
+  top: 16px;
+  left: -82px;
+  width: 72px;
+  height: 72px;
+  background: url("/vp-assets/images/luna/luna3nuvoloso.jpg") center / cover no-repeat;
+}
+
+body.vp-room .vp-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px 6px;
+  padding: 16px 10px 0;
+}
+
+body.vp-room .vp-powers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px 6px;
+  padding: 10px 10px 0;
+}
+
+body.vp-room .vp-buttons button,
+body.vp-room .vp-powers button,
+body.vp-room .vp-send,
+body.vp-room .vp-whisper {
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  background: linear-gradient(#000, #731010);
+  font: bold 12px Verdana, sans-serif;
+  text-shadow: 1px 1px 0 #000;
+}
+
+body.vp-room .vp-buttons button {
+  height: 28px;
+}
+
+body.vp-room .vp-powers button {
+  height: 24px;
+  color: #e6d093;
+  font-size: 11px;
+}
+
+body.vp-room .vp-status {
+  min-height: 16px;
+  padding: 8px 14px 0;
+  color: #ff9900;
+  font-size: 12px;
+}
+
+/* legacy lista_utenti.php: "N UTENTI IN ELYSIUM" grey h5 */
+body.vp-room .vp-roster-title {
+  margin-top: 34px;
+  padding: 20px 14px 12px;
+  border-top: 1px solid #777;
+  color: #a9a9a9;
+  font-size: 16px;
+}
+
+body.vp-room .vp-roster {
+  padding: 0 14px;
+  color: #ccc;
+}
+
+body.vp-room .vp-roster li {
+  margin: 2px 0;
+  line-height: 1.6;
+}
+
+/* legacy .utente_tasto: bold linklet, hover dark red */
+body.vp-room .vp-tasto {
+  margin-right: 4px;
+  color: #ccc;
+  font: 900 12px Verdana, sans-serif;
+  text-decoration: none;
+  cursor: default;
+}
+
+body.vp-room .vp-tasto:hover {
+  color: #761919;
+}
+
+/* legacy .utente: faint glow */
+body.vp-room .vp-utente {
+  margin-left: 6px;
+  color: #bbb;
+  font-size: 12px;
+  text-shadow: 0 0 5px #ccc;
+}
+
+body.vp-room .vp-utente-osc {
+  margin-left: 6px;
+  color: #ccc;
+  font-size: 12px;
+}
+
+body.vp-room .vp-door {
+  position: absolute;
+  right: 58px;
+  bottom: 98px;
+  width: 58px;
+  height: auto;
+}
+
+body.vp-room .vp-exit {
+  position: absolute;
+  right: 62px;
+  bottom: 28px;
+  color: #f00;
+  font-size: 13px;
+}
+
+body.vp-room .vp-send,
+body.vp-room .vp-whisper {
+  position: fixed;
+  z-index: 31;
+  bottom: 36px;
+  height: 28px;
+}
+
+body.vp-room .vp-send {
+  left: 386px;
+  width: 85px;
+}
+
+body.vp-room .vp-whisper {
+  left: 482px;
+  width: 184px;
+}

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vampiri Pavia - Cronaca di Vampiri Live</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      background: #000;
+      color: #ddd;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #000; }
+    #header {
+      width: min(1024px, 100%);
+      height: 191px;
+      margin: 0 auto;
+      background: url("/legacy-assets/imgs/header_login.jpg") center top / 1024px 191px no-repeat;
+    }
+    #corpo {
+      width: min(1024px, 100%);
+      min-height: 768px;
+      margin: 0 auto;
+      padding-top: 56px;
+      text-align: center;
+      background: #000 url("/legacy-assets/imgs/corpo_login.jpg") center top / 1024px 768px no-repeat;
+    }
+    .contenuto_amb {
+      width: min(850px, calc(100% - 28px));
+      margin: 10px auto;
+      color: #ddd;
+      font-size: 20px;
+      line-height: 1.15;
+      text-shadow: 1px 1px 0 #000;
+    }
+    strong {
+      display: block;
+      margin-top: 18px;
+      color: #fff;
+      font-size: 22px;
+      line-height: 1.05;
+      font-weight: 800;
+    }
+    .links { margin-top: 68px; color: #d7d7d7; font-size: 19px; }
+    .links a { color: #d7d7d7; text-decoration: none; display: block; }
+    .login {
+      position: relative;
+      width: 410px;
+      max-width: calc(100% - 34px);
+      margin: 34px auto 0;
+      padding-right: 82px;
+      color: #a8a7a8;
+      text-shadow: 1px 1px 0 rgba(0,0,0,.8);
+    }
+    .login p { min-height: 54px; margin: 0 0 6px; }
+    label {
+      float: left;
+      width: 100px;
+      line-height: 40px;
+      padding-right: 10px;
+      text-align: right;
+      letter-spacing: 1px;
+    }
+    input[type=text], input[type=password] {
+      width: 300px;
+      max-width: calc(100% - 104px);
+      height: 40px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 5px;
+      color: #bbb;
+      background: rgba(0,0,0,.18);
+      box-shadow: inset 0 1px 4px rgba(0,0,0,.3), 0 1px rgba(255,255,255,.06);
+      font-size: 15px;
+    }
+    input:focus { color: white; outline: 0; background: rgba(0,0,0,.1); }
+    .login-submit {
+      position: absolute;
+      top: 12px;
+      right: 0;
+      width: 70px;
+      height: 70px;
+      margin: 0;
+    }
+    .login-button {
+      width: 70px;
+      height: 70px;
+      border: 0;
+      border-radius: 35px;
+      cursor: pointer;
+      background:
+        url("/legacy-assets/imgs/ankh_white.png") center / 25px 52px no-repeat,
+        linear-gradient(#ff0000, #761919);
+      box-shadow: inset 0 0 0 1px #761919, 0 0 0 5px rgba(0,0,0,.16), 0 0 18px rgba(170,0,0,.45);
+      text-indent: -999px;
+      overflow: hidden;
+    }
+    .obf { margin-top: 8px; color: #aaa; }
+    .status { min-height: 24px; color: #ffb2b2; margin-top: 14px; }
+    #copyright {
+      width: min(1024px, 100%);
+      margin: 0 auto;
+      padding: 16px 12px 40px;
+      color: #666;
+      font-size: 11px;
+      line-height: 1.4;
+      text-align: center;
+    }
+    @media (max-width: 560px) {
+      #corpo { padding-top: 28px; background-size: cover; }
+      .contenuto_amb { font-size: 16px; }
+      strong { font-size: 18px; }
+      .links { margin-top: 34px; }
+      .login { padding-right: 0; }
+      label { float: none; display: block; width: auto; text-align: left; padding: 0; }
+      input[type=text], input[type=password] { width: 100%; max-width: none; }
+      .login-submit { position: static; margin: 12px auto 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+  <main id="corpo">
+    <p class="contenuto_amb">
+      Benvenuto nei domini di Rivaverde.<br>
+      Entra se vuoi, ma ricordati che la tenebra è sempre più pressante, in questi luoghi.<br>
+      Devi solo rispettare alcune comuni regole di buona educazione.
+      <strong>Non offendere nessuno<br>Non usare l'identità di altre persone<br>Se qualcuno ti infastidisce rivolgiti al webmaster</strong>
+    </p>
+
+    <p class="contenuto_amb">
+      Ora entra pure fratello e se ti sei trovato a tuo agio, torna a farci visita. Questa sarà la nostra soddisfazione maggiore.
+    </p>
+
+    <p class="contenuto_amb"><i>Leggi con attenzione le regole e l'ambientazione di questo Elysium prima di creare il tuo personaggio</i></p>
+
+    <p class="links">
+      <a href="javascript:void(0)" onclick="window.open('/popup.html?p=help','Regolamento','width=700,height=500,scrollbars=yes,resizable=yes')">Regolamento</a>
+      <a href="javascript:void(0)" onclick="window.open('/popup.html?p=crea','Creazione','width=700,height=500,scrollbars=yes,resizable=yes')">Crea personaggio</a>
+    </p>
+
+    <form id="login" class="login">
+      <p>
+        <label for="username">Username:</label>
+        <input id="username" type="text" name="username" autocomplete="username" value="a">
+      </p>
+      <p>
+        <label for="password">Password:</label>
+        <input id="password" type="password" name="password" autocomplete="current-password">
+      </p>
+      <p class="login-submit">
+        <button class="login-button" type="submit">Login</button>
+      </p>
+      <p class="obf">
+        <input id="obf" type="checkbox"> <label for="obf">Oscurazione</label>
+      </p>
+      <div id="status" class="status"></div>
+    </form>
+  </main>
+
+  <div id="copyright">
+    Tutto il materiale pubblicato su questo sito, i nomi, l'ambientazione e i marchi sono di proprietà della White Wolf.<br>
+    Il Webmaster declina ogni responsabilità riguardo l'uso di immagini e marchi protetti da copyright a scopi commerciali.<br>
+    © 1990-2003 White Wolf Publishing, Inc. All rights reserved
+  </div>
+
+  <script src="/vp-config.js"></script>
+  <script>
+    const form = document.getElementById("login");
+    const status = document.getElementById("status");
+
+    // Engine = Matrix: log in browser-direct to Synapse to obtain a real access
+    // token, stash it for chat.html, then enter the legacy room.
+    const SYNAPSE = window.VP_SYNAPSE_URL || "http://localhost:8008";
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      status.textContent = "";
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      try {
+        const response = await fetch(SYNAPSE + "/_matrix/client/v3/login", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            type: "m.login.password",
+            identifier: { type: "m.id.user", user: username },
+            password,
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Login incorretto");
+        sessionStorage.setItem("vp_token", data.access_token);
+        sessionStorage.setItem("vp_user", data.user_id);
+        sessionStorage.setItem("vp_obf", document.getElementById("obf").checked ? "1" : "0");
+        location.href = "/chat.html";
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+services:
+  synapse:
+    image: matrixdotorg/synapse:latest
+    environment:
+      SYNAPSE_SERVER_NAME: local
+      SYNAPSE_REPORT_STATS: "no"
+      SYNAPSE_REGISTRATION_SHARED_SECRET: dev-local-secret
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./synapse-data:/data
+
+  element:
+    image: vectorim/element-web:latest
+    depends_on:
+      - synapse
+    ports:
+      - "8080:80"
+    volumes:
+      - ./element-index.html:/app/index.html:ro
+      - ./element-config.json:/app/config.json:ro
+      - ./element-vp.css:/app/element-vp.css:ro
+      - ./element-vp.js:/app/element-vp.js:ro
+      - ../..//sito Vampiripavia/CHAT:/app/vp-assets:ro

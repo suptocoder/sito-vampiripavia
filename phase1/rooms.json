@@ -1,0 +1,714 @@
+{
+  "rooms": [
+    {
+      "id": "1",
+      "room_id": 1,
+      "name": "Via Raselli",
+      "priv": 0,
+      "adjacent": [
+        21,
+        69,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2
+      ]
+    },
+    {
+      "id": "2",
+      "room_id": 2,
+      "name": "Palazzo Rubini",
+      "priv": 0,
+      "adjacent": [
+        9,
+        8,
+        1
+      ]
+    },
+    {
+      "id": "3",
+      "room_id": 3,
+      "name": "Hotel Due Torri",
+      "priv": 0,
+      "adjacent": [
+        10,
+        1
+      ]
+    },
+    {
+      "id": "4",
+      "room_id": 4,
+      "name": "Teatro Rubini",
+      "priv": 0,
+      "adjacent": [
+        13,
+        1
+      ]
+    },
+    {
+      "id": "5",
+      "room_id": 5,
+      "name": "L'oro e L'argento",
+      "priv": 0,
+      "adjacent": [
+        16,
+        1
+      ]
+    },
+    {
+      "id": "6",
+      "room_id": 6,
+      "name": "Cattedrale San Michele",
+      "priv": 0,
+      "adjacent": [
+        17,
+        1
+      ]
+    },
+    {
+      "id": "7",
+      "room_id": 7,
+      "name": "Commissariato Spagnoli",
+      "priv": 0,
+      "adjacent": [
+        20,
+        19,
+        18,
+        1
+      ]
+    },
+    {
+      "id": "8",
+      "room_id": 8,
+      "name": "Pian Terreno",
+      "priv": 0,
+      "adjacent": [
+        2
+      ]
+    },
+    {
+      "id": "9",
+      "room_id": 9,
+      "name": "Uffici Palazzo Rubini",
+      "priv": 1,
+      "adjacent": [
+        8
+      ]
+    },
+    {
+      "id": "10",
+      "room_id": 10,
+      "name": "Hall Due Torri",
+      "priv": 0,
+      "adjacent": [
+        3,
+        12,
+        11
+      ]
+    },
+    {
+      "id": "11",
+      "room_id": 11,
+      "name": "Stanza Albergo",
+      "priv": 1,
+      "adjacent": [
+        10
+      ]
+    },
+    {
+      "id": "12",
+      "room_id": 12,
+      "name": "Suite Albergo",
+      "priv": 1,
+      "adjacent": [
+        10
+      ]
+    },
+    {
+      "id": "13",
+      "room_id": 13,
+      "name": "Foyer",
+      "priv": 1,
+      "adjacent": [
+        14,
+        4,
+        15
+      ]
+    },
+    {
+      "id": "14",
+      "room_id": 14,
+      "name": "Loggione",
+      "priv": 1,
+      "adjacent": [
+        13
+      ]
+    },
+    {
+      "id": "15",
+      "room_id": 15,
+      "name": "Backstage",
+      "priv": 1,
+      "adjacent": [
+        13
+      ]
+    },
+    {
+      "id": "16",
+      "room_id": 16,
+      "name": "Retrobottega Oro Argento",
+      "priv": 0,
+      "adjacent": [
+        5
+      ]
+    },
+    {
+      "id": "17",
+      "room_id": 17,
+      "name": "Sagrestia",
+      "priv": 0,
+      "adjacent": [
+        6
+      ]
+    },
+    {
+      "id": "18",
+      "room_id": 18,
+      "name": "Gabbiotto",
+      "priv": 0,
+      "adjacent": [
+        7,
+        19,
+        20
+      ]
+    },
+    {
+      "id": "19",
+      "room_id": 19,
+      "name": "Uffici Spagnoli",
+      "priv": 0,
+      "adjacent": [
+        18
+      ]
+    },
+    {
+      "id": "20",
+      "room_id": 20,
+      "name": "Celle",
+      "priv": 0,
+      "adjacent": [
+        18
+      ]
+    },
+    {
+      "id": "21",
+      "room_id": 21,
+      "name": "Tangenziale",
+      "priv": 0,
+      "adjacent": [
+        59,
+        49,
+        35,
+        22,
+        1
+      ]
+    },
+    {
+      "id": "22",
+      "room_id": 22,
+      "name": "Porta S Isaia",
+      "priv": 0,
+      "adjacent": [
+        23,
+        21
+      ]
+    },
+    {
+      "id": "23",
+      "room_id": 23,
+      "name": "Strada del Parco",
+      "priv": 0,
+      "adjacent": [
+        28,
+        27,
+        24,
+        22
+      ]
+    },
+    {
+      "id": "24",
+      "room_id": 24,
+      "name": "Parco Al Lago",
+      "priv": 0,
+      "adjacent": [
+        26,
+        25,
+        23
+      ]
+    },
+    {
+      "id": "25",
+      "room_id": 25,
+      "name": "Ristopub",
+      "priv": 0,
+      "adjacent": [
+        24
+      ]
+    },
+    {
+      "id": "26",
+      "room_id": 26,
+      "name": "Veranda",
+      "priv": 0,
+      "adjacent": [
+        24
+      ]
+    },
+    {
+      "id": "27",
+      "room_id": 27,
+      "name": "Campus Universitario",
+      "priv": 0,
+      "adjacent": [
+        32,
+        31,
+        30,
+        29,
+        23
+      ]
+    },
+    {
+      "id": "28",
+      "room_id": 28,
+      "name": "Commissariato Sottofiume",
+      "priv": 0,
+      "adjacent": [
+        33,
+        23
+      ]
+    },
+    {
+      "id": "29",
+      "room_id": 29,
+      "name": "Dormitorio",
+      "priv": 0,
+      "adjacent": [
+        27
+      ]
+    },
+    {
+      "id": "30",
+      "room_id": 30,
+      "name": "Museo di storia",
+      "priv": 0,
+      "adjacent": [
+        27
+      ]
+    },
+    {
+      "id": "31",
+      "room_id": 31,
+      "name": "Piscina",
+      "priv": 0,
+      "adjacent": [
+        27
+      ]
+    },
+    {
+      "id": "32",
+      "room_id": 32,
+      "name": "Biblioteca",
+      "priv": 0,
+      "adjacent": [
+        27
+      ]
+    },
+    {
+      "id": "33",
+      "room_id": 33,
+      "name": "Gabbiotto",
+      "priv": 0,
+      "adjacent": [
+        28,
+        34
+      ]
+    },
+    {
+      "id": "34",
+      "room_id": 34,
+      "name": "Uffici Sottofiume",
+      "priv": 0,
+      "adjacent": [
+        33
+      ]
+    },
+    {
+      "id": "35",
+      "room_id": 35,
+      "name": "Piazza delle Medaglie d oro",
+      "priv": 0,
+      "adjacent": [
+        71,
+        41,
+        36,
+        21
+      ]
+    },
+    {
+      "id": "36",
+      "room_id": 36,
+      "name": "Stazione",
+      "priv": 0,
+      "adjacent": [
+        37,
+        35
+      ]
+    },
+    {
+      "id": "37",
+      "room_id": 37,
+      "name": "Atrio",
+      "priv": 0,
+      "adjacent": [
+        39,
+        38,
+        36
+      ]
+    },
+    {
+      "id": "38",
+      "room_id": 38,
+      "name": "Sottopasso",
+      "priv": 0,
+      "adjacent": [
+        40,
+        37
+      ]
+    },
+    {
+      "id": "39",
+      "room_id": 39,
+      "name": "Uffici Stazione",
+      "priv": 0,
+      "adjacent": [
+        37
+      ]
+    },
+    {
+      "id": "40",
+      "room_id": 40,
+      "name": "Binario",
+      "priv": 0,
+      "adjacent": [
+        38
+      ]
+    },
+    {
+      "id": "41",
+      "room_id": 41,
+      "name": "Via Saturno",
+      "priv": 0,
+      "adjacent": [
+        46,
+        42,
+        35
+      ]
+    },
+    {
+      "id": "42",
+      "room_id": 42,
+      "name": "Centro Commerciale",
+      "priv": 0,
+      "adjacent": [
+        45,
+        41
+      ]
+    },
+    {
+      "id": "43",
+      "room_id": 43,
+      "name": "Cinema",
+      "priv": 0,
+      "adjacent": [
+        45
+      ]
+    },
+    {
+      "id": "44",
+      "room_id": 44,
+      "name": "Food Court",
+      "priv": 0,
+      "adjacent": [
+        45
+      ]
+    },
+    {
+      "id": "45",
+      "room_id": 45,
+      "name": "Shopping Town",
+      "priv": 0,
+      "adjacent": [
+        43,
+        44,
+        42
+      ]
+    },
+    {
+      "id": "46",
+      "room_id": 46,
+      "name": "Zona Industriale",
+      "priv": 0,
+      "adjacent": [
+        48,
+        47,
+        41
+      ]
+    },
+    {
+      "id": "47",
+      "room_id": 47,
+      "name": "Capannone Abbandonato",
+      "priv": 0,
+      "adjacent": [
+        46
+      ]
+    },
+    {
+      "id": "48",
+      "room_id": 48,
+      "name": "Capannone Abbandonato",
+      "priv": 0,
+      "adjacent": [
+        46
+      ]
+    },
+    {
+      "id": "49",
+      "room_id": 49,
+      "name": "Via Euterpe",
+      "priv": 0,
+      "adjacent": [
+        56,
+        55,
+        50,
+        21
+      ]
+    },
+    {
+      "id": "50",
+      "room_id": 50,
+      "name": "Ospedale Maggiore",
+      "priv": 0,
+      "adjacent": [
+        51,
+        49
+      ]
+    },
+    {
+      "id": "51",
+      "room_id": 51,
+      "name": "Accettazione",
+      "priv": 0,
+      "adjacent": [
+        54,
+        53,
+        52,
+        50
+      ]
+    },
+    {
+      "id": "52",
+      "room_id": 52,
+      "name": "Reparto",
+      "priv": 0,
+      "adjacent": [
+        51
+      ]
+    },
+    {
+      "id": "53",
+      "room_id": 53,
+      "name": "Pronto Soccorso",
+      "priv": 0,
+      "adjacent": [
+        51
+      ]
+    },
+    {
+      "id": "54",
+      "room_id": 54,
+      "name": "Obitorio",
+      "priv": 0,
+      "adjacent": [
+        51
+      ]
+    },
+    {
+      "id": "55",
+      "room_id": 55,
+      "name": "Cimitero Urbano",
+      "priv": 0,
+      "adjacent": [
+        49
+      ]
+    },
+    {
+      "id": "56",
+      "room_id": 56,
+      "name": "Abazia del Monte",
+      "priv": 0,
+      "adjacent": [
+        58,
+        57,
+        49
+      ]
+    },
+    {
+      "id": "57",
+      "room_id": 57,
+      "name": "Chiesa",
+      "priv": 0,
+      "adjacent": [
+        56
+      ]
+    },
+    {
+      "id": "58",
+      "room_id": 58,
+      "name": "Laboratorio Frati",
+      "priv": 0,
+      "adjacent": [
+        56
+      ]
+    },
+    {
+      "id": "59",
+      "room_id": 59,
+      "name": "Strada Provinciale",
+      "priv": 0,
+      "adjacent": [
+        68,
+        64,
+        60,
+        21
+      ]
+    },
+    {
+      "id": "60",
+      "room_id": 60,
+      "name": "Motel Ferri",
+      "priv": 0,
+      "adjacent": [
+        63,
+        62,
+        61,
+        59
+      ]
+    },
+    {
+      "id": "61",
+      "room_id": 61,
+      "name": "Camera 1",
+      "priv": 0,
+      "adjacent": [
+        60
+      ]
+    },
+    {
+      "id": "62",
+      "room_id": 62,
+      "name": "Camera 2",
+      "priv": 0,
+      "adjacent": [
+        60
+      ]
+    },
+    {
+      "id": "63",
+      "room_id": 63,
+      "name": "Camera 3",
+      "priv": 0,
+      "adjacent": [
+        60
+      ]
+    },
+    {
+      "id": "64",
+      "room_id": 64,
+      "name": "Sanatorio Abbandonato",
+      "priv": 0,
+      "adjacent": [
+        65,
+        59
+      ]
+    },
+    {
+      "id": "65",
+      "room_id": 65,
+      "name": "Atrio Principale",
+      "priv": 0,
+      "adjacent": [
+        64,
+        66,
+        67
+      ]
+    },
+    {
+      "id": "66",
+      "room_id": 66,
+      "name": "Stanze abbandonate",
+      "priv": 0,
+      "adjacent": [
+        65
+      ]
+    },
+    {
+      "id": "67",
+      "room_id": 67,
+      "name": "Sotterranei",
+      "priv": 0,
+      "adjacent": [
+        65
+      ]
+    },
+    {
+      "id": "68",
+      "room_id": 68,
+      "name": "Clinica Privata La Sapienza",
+      "priv": 0,
+      "adjacent": [
+        59
+      ]
+    },
+    {
+      "id": "69",
+      "room_id": 69,
+      "name": "Banca",
+      "priv": 0,
+      "adjacent": [
+        70,
+        1
+      ]
+    },
+    {
+      "id": "70",
+      "room_id": 70,
+      "name": "Uffici e Cassaforte",
+      "priv": 0,
+      "adjacent": [
+        69
+      ]
+    },
+    {
+      "id": "71",
+      "room_id": 71,
+      "name": "Sede Giornale La Provincia",
+      "priv": 0,
+      "adjacent": [
+        35
+      ]
+    }
+  ]
+}

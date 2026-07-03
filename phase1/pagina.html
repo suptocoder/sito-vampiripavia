@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Vampiripavia.com</title>
+  <link rel="stylesheet" href="/legacy-assets/stili.css">
+  <style>
+    body { background: #000; }
+    .bar { background: #444444; text-align: center; }
+    .pad { padding: 14px; }
+    table.data { width: 100%; }
+    table.data td { padding: 3px 8px; }
+    .missiva { border-bottom: 1px solid #333; padding: 8px; }
+    input[type=text], textarea { width: 100%; box-sizing: border-box; }
+    a.plain_e { color: #ccc; text-decoration: none; }
+    a.plain_e:hover { color: #761919; }
+    .button { margin: 6px 0; }
+  </style>
+</head>
+<body bgcolor="#000000">
+  <div id="page" class="small"><div class="pad">Caricamento...</div></div>
+  <script>
+    var P = new URLSearchParams(location.search);
+    var p = P.get("p") || "banca", me = P.get("me");
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+    var page = document.getElementById("page");
+    var bar = function (t) { return '<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td class="medium bar" height="20"><b>' + t + '</b></td></tr></table>'; };
+    var chiudi = '<div class="pad" style="text-align:center"><a href="javascript:self.close()" class="plain_e">Chiudi</a></div>';
+    var vpToken = sessionStorage.getItem("vp_token") || "";
+    function api(method, path, body) {
+      var sep = path.indexOf("?") === -1 ? "?" : "&";
+      var headers = { "x-vp-token": vpToken };
+      if (body) headers["content-type"] = "application/json";
+      return fetch(path + sep + "matrix_user_id=" + encodeURIComponent(me), {
+        method: method, headers: headers, body: body ? JSON.stringify(body) : undefined,
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); });
+    }
+    var dt = function (t) { return t ? new Date(t * 1000).toLocaleString("it-IT") : "-"; };
+
+    if (p === "banca") {
+      document.title = "Banca";
+      api("GET", "/banca").then(function (r) {
+        var b = r.body;
+        page.innerHTML = bar("BANCA") +
+          '<div class="pad"><table class="data">' +
+            '<tr><td align="right"><b>Entrate:</b></td><td>' + esc(b.entrate) + '</td></tr>' +
+            '<tr><td align="right"><b>Uscite:</b></td><td>' + esc(b.uscite) + '</td></tr>' +
+            '<tr><td align="right"><b>Totale mensile:</b></td><td>' + esc(b.totale) + '</td></tr>' +
+            '<tr><td align="right"><b>Accumulato:</b></td><td>' + esc(b.spesi) + '</td></tr>' +
+            '<tr><td align="right"><b>Prossimo stipendio:</b></td><td>' + esc(dt(b.prossimo)) + '</td></tr>' +
+          '</table><div style="text-align:center"><input type="button" class="button" value="Riscuoti stipendio" id="risc"></div>' +
+          '<div id="msg" class="small_rosso" style="text-align:center"></div></div>' + chiudi;
+        document.getElementById("risc").addEventListener("click", function () {
+          api("POST", "/banca/riscuoti").then(function (rr) {
+            document.getElementById("msg").textContent = rr.ok ? ("Riscosso: " + rr.body.riscosso) : rr.body.error;
+          });
+        });
+      });
+    } else if (p === "inventario" || p === "armi") {
+      var armi = p === "armi";
+      document.title = armi ? "Armi" : "Inventario";
+      api("GET", "/inventario").then(function (r) {
+        var items = (r.body.items || []).filter(function (i) { return armi ? /bianca|fuoco|rissa/.test(i.tipo || "") : true; });
+        var rows = items.map(function (i) { return '<tr><td>' + esc(i.nome) + '</td><td class="small_rosso">' + esc(i.tipo || "") + '</td></tr>'; }).join("") ||
+          '<tr><td class="small">Nessun oggetto.</td></tr>';
+        page.innerHTML = bar(armi ? "ARMI" : "INVENTARIO") + '<div class="pad"><table class="data">' + rows + '</table></div>' + chiudi;
+      });
+    } else if (p === "missive") {
+      document.title = "Missive";
+      function render(r) {
+        var rec = (r.body.received || []).map(function (m) {
+          return '<div class="missiva"><span class="medium_oro"><b>Da ' + esc(m.from_name) + '</b></span> <span class="small">' + esc(dt(m.time)) + '</span><br><span class="medium">' + esc(m.body) + '</span></div>';
+        }).join("") || '<div class="small pad">Nessuna missiva ricevuta.</div>';
+        page.innerHTML = bar("MISSIVE") +
+          '<div class="pad"><b class="small_rosso">RICEVUTE</b>' + rec + '</div>' +
+          '<div class="pad"><b class="small_rosso">NUOVA MISSIVA</b><br>' +
+            '<input type="text" id="to" placeholder="Destinatario (es. B)"><br>' +
+            '<textarea id="body" rows="4" placeholder="Testo..."></textarea><br>' +
+            '<input type="button" class="button" value="Invia" id="send"><span id="msg" class="small"></span></div>' + chiudi;
+        document.getElementById("send").addEventListener("click", function () {
+          var to = document.getElementById("to").value.trim(), body = document.getElementById("body").value.trim();
+          if (!to || !body) { document.getElementById("msg").textContent = "Compila i campi"; return; }
+          api("POST", "/missive", { to: to, body: body }).then(function (rr) {
+            if (rr.ok) api("GET", "/missive").then(render);
+            else document.getElementById("msg").textContent = rr.body.error || "Errore";
+          });
+        });
+      }
+      api("GET", "/missive").then(render);
+    } else {
+      document.title = "Vampiripavia.com";
+      page.innerHTML = bar("SEZIONE") + '<div class="pad small">Non disponibile.</div>' + chiudi;
+    }
+  </script>
+</body>
+</html>

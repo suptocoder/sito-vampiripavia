@@ -1,0 +1,14 @@
+# Keep the build context small and NEVER bake local runtime state (Matrix access
+# tokens live in phase1/data.json) into the image.
+*
+!phase1/**
+!sito Vampiripavia/CHAT/imgs/**
+!sito Vampiripavia/CHAT/images/**
+!sito Vampiripavia/CHAT/stili.css
+
+# excluded again from the whitelisted phase1 tree
+phase1/data.json
+phase1/data.json.audit-backup
+phase1/matrix/synapse-data/**
+phase1/screenshots/**
+phase1/_notes/**
