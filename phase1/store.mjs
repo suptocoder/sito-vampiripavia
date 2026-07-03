@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -45,6 +45,9 @@ export function getState() {
 
 export function save(nextState = state) {
   state = normalize(nextState);
+  // VP_DATA_PATH may point into a directory that doesn't exist yet (e.g. a volume
+  // mount path on a plan without volumes) — create it instead of failing every save.
+  mkdirSync(dirname(dataPath), { recursive: true });
   writeFileSync(dataPath, `${JSON.stringify(state, null, 2)}\n`);
   return state;
 }
