@@ -191,18 +191,22 @@ function updateStore(accounts, matrixRooms) {
 async function main() {
   const accounts = {};
   for (const [localpart, displayName] of users) {
+    console.log(`provision: user ${localpart}`);
     accounts[localpart] = await loginOrRegister(localpart);
     await setDisplayName(accounts[localpart], displayName);
   }
 
   const matrixRooms = {};
+  let done = 0;
   for (const room of rooms) {
     matrixRooms[room.id] = await createRoom(accounts.staff.access_token, serverNameOf(accounts.staff.user_id), room);
     for (const [localpart] of users) await joinRoom(accounts[localpart], matrixRooms[room.id]);
+    done += 1;
+    if (done % 10 === 0 || done === rooms.length) console.log(`provision: rooms ${done}/${rooms.length}`);
   }
   updateStore(accounts, matrixRooms);
 
-  console.log(`wrote phase1/data.json for ${users.length} users and ${rooms.length} rooms`);
+  console.log(`wrote phase1 data for ${users.length} users and ${rooms.length} rooms`);
 }
 
 function selfTest() {

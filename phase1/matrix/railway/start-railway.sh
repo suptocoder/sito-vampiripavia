@@ -1,7 +1,11 @@
 #!/bin/sh
 set -e
 
-# First boot on a fresh volume: generate homeserver.yaml, then append the demo
+# No-volume deployments (Railway Trial): /data is baked into the image, but recreate it
+# defensively; with a mounted volume this is a no-op.
+mkdir -p /data
+
+# First boot on fresh storage: generate homeserver.yaml, then append the demo
 # overrides. YAML keeps the LAST occurrence of a duplicate key, so appending wins.
 if [ ! -f /data/homeserver.yaml ]; then
   /start.py generate
@@ -17,6 +21,7 @@ if [ ! -f /data/homeserver.yaml ]; then
     printf 'rc_login:\n  address: {per_second: 100, burst_count: 100}\n  account: {per_second: 100, burst_count: 100}\n'
     printf 'rc_registration: {per_second: 100, burst_count: 100}\n'
     printf 'rc_joins:\n  local: {per_second: 100, burst_count: 100}\n'
+    printf 'rc_message: {per_second: 50, burst_count: 100}\n'
   } >> /data/homeserver.yaml
 fi
 

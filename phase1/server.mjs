@@ -459,27 +459,55 @@ function startMatrixWatcher() {
   return matrixWatcher;
 }
 
-// VP_AUTO_PROVISION=1: on boot, if data.json has no Matrix wiring yet (fresh volume),
+// VP_AUTO_PROVISION=1: on boot, if data.json has no Matrix wiring yet (fresh storage),
 // register the demo users and create/join the game rooms against MATRIX_BASE_URL.
 // Retries until Synapse is reachable, so service start order doesn't matter.
+//
+// Existing wiring is verified against the homeserver before being trusted: on
+// volume-less deployments (Railway Trial) Synapse loses all state on redeploy/restart,
+// so stored tokens can point at a homeserver that no longer knows them — in that case
+// the sidecar re-provisions instead of serving a half-broken demo.
 async function autoProvision() {
   if (process.env.VP_AUTO_PROVISION !== "1") return;
-  const provisioned = () => {
-    const db = state();
-    return db.rooms.some((room) => room.matrix_room_id)
-      && db.characters.length > 0
-      && db.characters.every((character) => character.access_token);
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const hasWiring = (db) =>
+    db.rooms.some((room) => room.matrix_room_id)
+    && db.characters.length > 0
+    && db.characters.every((character) => character.access_token);
+
+  // true = wiring works; false = homeserver rejected the token (stale); null = can't tell yet
+  const wiringValid = async (db) => {
+    const probe = db.characters.find((character) => character.access_token);
+    if (!probe) return false;
+    try {
+      const response = await fetch(`${matrixConfig.homeserverUrl}/_matrix/client/v3/account/whoami`, {
+        headers: { authorization: `Bearer ${probe.access_token}` },
+      });
+      if (response.ok) return (await response.json()).user_id === probe.matrix_user_id;
+      return response.status === 401 || response.status === 403 ? false : null;
+    } catch {
+      return null; // unreachable: wait, don't wipe potentially good wiring
+    }
   };
-  if (provisioned()) return;
+
   const { provision } = await import("./setup-matrix.mjs");
   for (;;) {
+    if (hasWiring(state())) {
+      const valid = await wiringValid(state());
+      if (valid === true) return;
+      if (valid === null) {
+        await sleep(15_000);
+        continue;
+      }
+      console.log("stored Matrix wiring rejected by the homeserver (fresh Synapse?) — re-provisioning");
+    }
     try {
       await provision();
       console.log("auto-provisioned Matrix users and rooms");
       return;
     } catch (error) {
       console.error(`auto-provision failed (${error.message}); retrying in 15s`);
-      await new Promise((resolve) => setTimeout(resolve, 15_000));
+      await sleep(15_000);
     }
   }
 }

@@ -1,11 +1,19 @@
-# Synapse for Railway: generates its config on first boot (persisted to the /data
-# volume), then applies the demo overrides (closed registration, shared secret for
-# provisioning, relaxed login rate limits mirroring the local dev homeserver).
+# Synapse for Railway: generates its config on first boot, then applies the demo
+# overrides (closed registration, shared secret for provisioning, relaxed login rate
+# limits mirroring the local dev homeserver).
+#
+# Works with OR without a volume at /data. Without one (Railway Trial), /data lives in
+# the container filesystem: everything (accounts, rooms, messages) resets on every
+# redeploy or restart — fine for a temporary demo; the sidecar detects the fresh
+# homeserver and re-provisions itself.
 FROM matrixdotorg/synapse:latest
 
 ENV SYNAPSE_SERVER_NAME=local \
     SYNAPSE_REPORT_STATS=no \
     SYNAPSE_HTTP_PORT=8008
+
+# /data must exist even when no volume is mounted (the base image expects the mount).
+RUN mkdir -p /data
 
 COPY start-railway.sh /start-railway.sh
 RUN chmod +x /start-railway.sh

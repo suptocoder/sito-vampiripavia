@@ -4,6 +4,14 @@ Two services from this repo: **synapse** (Matrix homeserver) and **sidecar** (No
 engine + the chat UI). The sidecar's public URL is the link you send your client.
 Everything below assumes the Railway dashboard; the CLI equivalents work the same.
 
+> **Railway Trial (no volumes):** skip both "mount a volume" steps and omit
+> `VP_DATA_PATH`. Everything still works — both images fall back to container
+> storage — but ALL state (accounts, rooms, messages, RPG state) resets whenever a
+> service redeploys or restarts. The sidecar notices a wiped homeserver at boot
+> (stored tokens get rejected) and re-provisions itself; give it a minute or two
+> after a restart before testing. Fine for a temporary demo; add the volumes when
+> you upgrade if you want state to survive.
+
 ## 0. Pick your secrets first
 
 | Secret | Used for |
@@ -18,7 +26,8 @@ Everything below assumes the Railway dashboard; the CLI equivalents work the sam
 - Settings → Build:
   - **Root directory:** `phase1/matrix/railway`
   - **Dockerfile path:** `Dockerfile.synapse`
-- Settings → Volume: mount a volume at **`/data`** (Synapse DB, keys, config).
+- Settings → Volume: mount a volume at **`/data`** (Synapse DB, keys, config). *Skip
+  on Trial — Synapse then runs on ephemeral container storage.*
 - Variables:
   - `SYNAPSE_REGISTRATION_SHARED_SECRET` = your secret
 - Settings → Networking: generate a public domain, **target port 8008**.
@@ -35,7 +44,8 @@ group will log in from the same office IP). Server name stays `local` (user IDs 
 - Settings → Build:
   - **Root directory:** repo root
   - **Dockerfile path:** `Dockerfile`
-- Settings → Volume: mount a volume at **`/vp-data`** (live game state).
+- Settings → Volume: mount a volume at **`/vp-data`** (live game state). *Skip on
+  Trial, and also omit `VP_DATA_PATH` below — state then lives in the container.*
 - Variables (replace the synapse domain with yours):
 
 ```
