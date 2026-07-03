@@ -22,6 +22,9 @@ if [ ! -f /data/homeserver.yaml ]; then
     printf 'rc_registration: {per_second: 100, burst_count: 100}\n'
     printf 'rc_joins:\n  local: {per_second: 100, burst_count: 100}\n'
     printf 'rc_message: {per_second: 50, burst_count: 100}\n'
+    # Dedicated room-creation limiter (default 0.016/s, burst 10): provisioning creates
+    # 65 rooms in one burst and would stall at ~10 with 429 (rc_room_creation) otherwise.
+    printf 'rc_room_creation: {per_second: 100, burst_count: 100}\n'
   } >> /data/homeserver.yaml
 fi
 

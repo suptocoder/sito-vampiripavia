@@ -40,7 +40,10 @@ const serverNameOf = (matrixUserId) => matrixUserId.split(":").slice(1).join(":"
 const roomAliasId = (alias, serverName) => `#${alias}:${serverName}`;
 
 async function matrix(method, path, token, body) {
-  for (let attempt = 0; attempt < 6; attempt++) {
+  // Patient 429 handling: some limiters (rc_room_creation defaults to one room per
+  // ~62s) return retry_after_ms of a minute or more. Honor it and keep going —
+  // slow provisioning beats a stalled deployment.
+  for (let attempt = 0; attempt < 30; attempt++) {
     const response = await fetch(`${config.homeserver}${path}`, {
       method,
       headers: {
@@ -52,8 +55,10 @@ async function matrix(method, path, token, body) {
     const text = await response.text();
     const data = text ? JSON.parse(text) : {};
     if (response.ok) return data;
-    if (response.status === 429 && attempt < 5) {
-      await new Promise((resolve) => setTimeout(resolve, Number(data.retry_after_ms || 1000) + 250));
+    if (response.status === 429 && attempt < 29) {
+      const waitMs = Math.min(Number(data.retry_after_ms || 1000) + 250, 120_000);
+      if (waitMs > 5000) console.log(`provision: rate limited on ${path.split("/").pop()}, waiting ${Math.round(waitMs / 1000)}s`);
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
       continue;
     }
     throw new MatrixError(response, data);
