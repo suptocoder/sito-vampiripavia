@@ -356,6 +356,8 @@ async function route(req, res) {
     const result = (path === "/volonta" ? volonta : fva)(db, me);
     if (result.body.error) return json(res, result.status, result.body);
     save(db);
+    // Legacy volonta.php: reg_msg("", "[X spende un punto Forza di Volonta]", "all", room)
+    if (path === "/volonta" && result.room_id) await postRoomMessage(db, result.room_id, result.message, "gold");
     return json(res, result.status, result.body);
   }
 

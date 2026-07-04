@@ -37,10 +37,27 @@ export function guarisci(db, ch) {
   return { status: 200, body: { ok: true, danni: ch.danni, blood: ch.blood }, room_id: ap ? ap.room_id : null, message: `${ch.display_name} rimargina le proprie ferite` };
 }
 
+// Legacy: volonta.php spends the point and announces it to the room; scheda_refill.php
+// restores a trait pool to max for 1 Volonta. Per the client, one SPENDI restores all
+// three pools (Mentali, Sociali, Fisici) at once. (Legacy charged 1 per pool, and its
+// fisici branch had a copy-paste bug restoring fis to soc_max — not reproduced.)
 export function volonta(db, ch) {
   if (Number(ch.will || 0) <= 0) return { status: 400, body: { error: "Volonta insufficiente" } };
   ch.will = Number(ch.will) - 1;
-  return { status: 200, body: { ok: true, will: ch.will, message: "Spendi un punto Volonta" } };
+  if (ch.men_max != null) {
+    ch.mental_points = Number(ch.men_max);
+    if ("men" in ch) ch.men = Number(ch.men_max);
+  }
+  if (ch.fis_max != null) ch.fis = Number(ch.fis_max);
+  if (ch.soc_max != null) ch.soc = Number(ch.soc_max);
+  const ap = presenceOf(db, ch.id);
+  logEvent(db, "volonta", ch.id, ap ? ap.room_id : null);
+  return {
+    status: 200,
+    body: { ok: true, will: ch.will, mental_points: ch.mental_points, fis: ch.fis, soc: ch.soc, message: "Spendi un punto Volonta: Mentali, Sociali e Fisici ripristinati" },
+    room_id: ap ? ap.room_id : null,
+    message: `[${ch.display_name} spende un punto Forza di Volonta]`,
+  };
 }
 
 export function fva(db, ch) {
@@ -79,7 +96,7 @@ export function listMissive(db, id) {
 function selfTest() {
   const assert = (c, m) => { if (!c) throw new Error(m); };
   const db = {
-    characters: [{ id: "a", display_name: "A", blood: 5, bloodmax: 10, will: 3, danni: 2 }],
+    characters: [{ id: "a", display_name: "A", blood: 5, bloodmax: 10, will: 3, danni: 2, mental_points: 1, men_max: 5, fis: 2, fis_max: 6, soc: 3, soc_max: 7 }],
     room_presence: [{ character_id: "a", room_id: "1", obfuscate_level: 0 }],
     event_log: [], missive: [],
   };
@@ -87,7 +104,13 @@ function selfTest() {
   assert(caccia(db, a).body.blood === 10, "caccia refills blood");
   assert(caccia(db, a).status === 400, "caccia blocked at max");
   assert(guarisci(db, a).body.danni === 1, "guarisci reduces damage");
-  assert(volonta(db, a).body.will === 2, "volonta spends will");
+  const spent = volonta(db, a);
+  assert(spent.body.will === 2, "volonta spends will");
+  assert(a.mental_points === 5 && a.fis === 6 && a.soc === 7, "volonta refills mentali/fisici/sociali to max");
+  assert(spent.room_id === "1" && /Forza di Volonta/.test(spent.message), "volonta announces to the room");
+  a.will = 0;
+  assert(volonta(db, a).status === 400, "volonta blocked at zero will");
+  a.will = 3;
   assert(fva(db, a).body.ok, "fva activates");
   assert(bancaInfo({ banca: { entrate: 5, uscite: 2 } }).totale === 3, "banca totale");
   assert(sendMissive(db, "a", "b", "ciao").body.ok, "send missive");
