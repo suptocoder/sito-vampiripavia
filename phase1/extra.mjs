@@ -37,26 +37,45 @@ export function guarisci(db, ch) {
   return { status: 200, body: { ok: true, danni: ch.danni, blood: ch.blood }, room_id: ap ? ap.room_id : null, message: `${ch.display_name} rimargina le proprie ferite` };
 }
 
-// Legacy: volonta.php spends the point and announces it to the room; scheda_refill.php
-// restores a trait pool to max for 1 Volonta. Per the client, one SPENDI restores all
-// three pools (Mentali, Sociali, Fisici) at once. (Legacy charged 1 per pool, and its
-// fisici branch had a copy-paste bug restoring fis to soc_max — not reproduced.)
+// Legacy volonta.php: spend 1 point and announce it to the room. Restoring trait pools
+// is a SEPARATE action (refill below, legacy scheda_refill.php).
 export function volonta(db, ch) {
   if (Number(ch.will || 0) <= 0) return { status: 400, body: { error: "Volonta insufficiente" } };
   ch.will = Number(ch.will) - 1;
-  if (ch.men_max != null) {
-    ch.mental_points = Number(ch.men_max);
-    if ("men" in ch) ch.men = Number(ch.men_max);
-  }
-  if (ch.fis_max != null) ch.fis = Number(ch.fis_max);
-  if (ch.soc_max != null) ch.soc = Number(ch.soc_max);
   const ap = presenceOf(db, ch.id);
   logEvent(db, "volonta", ch.id, ap ? ap.room_id : null);
   return {
     status: 200,
-    body: { ok: true, will: ch.will, mental_points: ch.mental_points, fis: ch.fis, soc: ch.soc, message: "Spendi un punto Volonta: Mentali, Sociali e Fisici ripristinati" },
+    body: { ok: true, will: ch.will, message: "Spendi un punto Volonta" },
     room_id: ap ? ap.room_id : null,
     message: `[${ch.display_name} spende un punto Forza di Volonta]`,
+  };
+}
+
+// Legacy scheda_refill.php (?t=M/F/S): 1 Volonta restores ONE pool to its max, only when
+// that pool is below max and will > 0. No room announcement. Legacy's Fisici branch had
+// two copy-paste bugs (guarded on the mental condition, restored fis to soc_max) —
+// intent reproduced, bugs not.
+const REFILL_POOLS = {
+  M: { label: "Mentali", cur: (ch) => Number(ch.mental_points ?? ch.men ?? 0), max: (ch) => Number(ch.men_max), set: (ch, v) => { ch.mental_points = v; if ("men" in ch) ch.men = v; } },
+  F: { label: "Fisici", cur: (ch) => Number(ch.fis ?? 0), max: (ch) => Number(ch.fis_max), set: (ch, v) => { ch.fis = v; } },
+  S: { label: "Sociali", cur: (ch) => Number(ch.soc ?? 0), max: (ch) => Number(ch.soc_max), set: (ch, v) => { ch.soc = v; } },
+};
+
+export function refill(db, ch, pool) {
+  const spec = REFILL_POOLS[String(pool || "").toUpperCase()];
+  if (!spec) return { status: 400, body: { error: "Pool non valido (t=M, F o S)" } };
+  if (Number(ch.will || 0) <= 0) return { status: 400, body: { error: "Volonta insufficiente" } };
+  if (!Number.isFinite(spec.max(ch)) || spec.cur(ch) >= spec.max(ch)) {
+    return { status: 400, body: { error: `${spec.label} gia al massimo` } };
+  }
+  spec.set(ch, spec.max(ch));
+  ch.will = Number(ch.will) - 1;
+  const ap = presenceOf(db, ch.id);
+  logEvent(db, "refill", ch.id, ap ? ap.room_id : null, { pool: spec.label });
+  return {
+    status: 200,
+    body: { ok: true, will: ch.will, mental_points: ch.mental_points, fis: ch.fis, soc: ch.soc, message: `${spec.label} ripristinati` },
   };
 }
 
@@ -106,9 +125,16 @@ function selfTest() {
   assert(guarisci(db, a).body.danni === 1, "guarisci reduces damage");
   const spent = volonta(db, a);
   assert(spent.body.will === 2, "volonta spends will");
-  assert(a.mental_points === 5 && a.fis === 6 && a.soc === 7, "volonta refills mentali/fisici/sociali to max");
+  assert(a.mental_points === 1 && a.fis === 2 && a.soc === 3, "volonta does NOT touch trait pools (legacy)");
   assert(spent.room_id === "1" && /Forza di Volonta/.test(spent.message), "volonta announces to the room");
-  a.will = 0;
+  assert(refill(db, a, "M").body.mental_points === 5 && a.will === 1, "refill M restores mentali for 1 will");
+  assert(refill(db, a, "M").status === 400, "refill M blocked at max");
+  assert(refill(db, a, "f").body.fis === 6 && a.will === 0, "refill F restores fisici to fis_max");
+  assert(refill(db, a, "S").status === 400, "refill blocked at zero will");
+  assert(/insufficiente/.test(refill(db, a, "S").body.error), "zero-will refill error message");
+  a.will = 1;
+  assert(refill(db, a, "S").body.soc === 7, "refill S restores sociali");
+  assert(refill(db, a, "X").status === 400, "invalid pool rejected");
   assert(volonta(db, a).status === 400, "volonta blocked at zero will");
   a.will = 3;
   assert(fva(db, a).body.ok, "fva activates");
@@ -122,4 +148,4 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   console.log("extra self-test ok");
 }
 
-export default { caccia, guarisci, volonta, fva, bancaInfo, riscuoti, sendMissive, listMissive };
+export default { caccia, guarisci, volonta, refill, fva, bancaInfo, riscuoti, sendMissive, listMissive };

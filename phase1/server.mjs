@@ -7,7 +7,7 @@ import { getState, reseedKeepingMatrix, save, seedState } from "./store.mjs";
 import { activateObfuscate, appear, appearForPublicMessage } from "./obfuscate.mjs";
 import { useAuspex } from "./auspex.mjs";
 import { resolveChallenge, activateBuff } from "./challenge.mjs";
-import { caccia, guarisci, volonta, fva, bancaInfo, riscuoti, sendMissive, listMissive } from "./extra.mjs";
+import { caccia, guarisci, volonta, refill, fva, bancaInfo, riscuoti, sendMissive, listMissive } from "./extra.mjs";
 import { visibleRosterForRoom } from "./roster.mjs";
 import { matrixConfigFromEnv } from "./matrix-client.mjs";
 import { watchMatrixEvents } from "./matrix-events.mjs";
@@ -352,6 +352,14 @@ async function route(req, res) {
     if (result.room_id) await postRoomMessage(db, result.room_id, result.message, "gold");
     return json(res, result.status, result.body);
   }
+  // Legacy scheda_refill.php?t=M/F/S — restore one pool to max for 1 Volonta (silent).
+  if (req.method === "POST" && path === "/refill") {
+    const result = refill(db, me, url.searchParams.get("t") || url.searchParams.get("pool"));
+    if (result.body.error) return json(res, result.status, result.body);
+    save(db);
+    return json(res, result.status, result.body);
+  }
+
   if (req.method === "POST" && (path === "/volonta" || path === "/fva")) {
     const result = (path === "/volonta" ? volonta : fva)(db, me);
     if (result.body.error) return json(res, result.status, result.body);
