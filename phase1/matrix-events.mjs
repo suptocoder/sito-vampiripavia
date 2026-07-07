@@ -67,6 +67,15 @@ function characterByMatrix(db, matrixUserId) {
   return (db.characters || []).find((character) => character.matrix_user_id === matrixUserId) || null;
 }
 
+// Legacy chat_command.php: whispers to the Master (wisperM=1 -> reg_msg_master) are the ONLY
+// player message that does not break obfuscation. Whispers to other PCs do break it.
+function isWhisperToStaff(db, event) {
+  const rcpt = event?.content?.vp_rcpt;
+  if (!rcpt) return false;
+  const recipient = characterByMatrix(db, rcpt);
+  return Boolean(recipient?.is_staff);
+}
+
 function presenceOf(db, characterId) {
   return (db.room_presence || []).find((presence) => presence.character_id === characterId) || null;
 }
@@ -107,6 +116,8 @@ export function handleMatrixEvent(db, event, room, options = {}) {
   const presence = presenceOf(db, actor.id);
   if (!presence || presence.room_id !== room.id) return { processed: false, reason: "not_present_in_mapped_room" };
 
+  if (isWhisperToStaff(db, event)) return { processed: false, reason: "staff_whisper" };
+
   const result = appearForPublicMessage(db, actor);
   if (result.broke_obfuscate) {
     logEvent(db, "message_broke_obfuscate", actor.id, result.room_id, {
@@ -114,6 +125,9 @@ export function handleMatrixEvent(db, event, room, options = {}) {
       matrix_room_id: room.matrix_room_id,
     });
     (options.saveState || save)(db);
+    // Announce the reappearance to the room ("X emerge dalle ombre") — the legacy break
+    // was silent, the client asked for an automatic appear line on every break.
+    if (options.announce && result.message) options.announce(db, room.id, result.message);
   }
 
   return {
@@ -219,23 +233,34 @@ export function watchMatrixEvents(options = {}) {
 export const createMatrixEventWatcher = watchMatrixEvents;
 
 function selfTest() {
-  const db = {
-    characters: [{ id: "c", matrix_user_id: "@c:local", display_name: "C" }],
+  const makeDb = () => ({
+    characters: [
+      { id: "c", matrix_user_id: "@c:local", display_name: "C" },
+      { id: "staff", matrix_user_id: "@staff:local", display_name: "Staff", is_staff: true },
+    ],
     rooms: [{ id: "elysium", matrix_room_id: "!elysium:local" }],
     room_presence: [{ character_id: "c", room_id: "elysium", obfuscate_level: 2 }],
     auspex_reveals: [{ observer_character_id: "a", hidden_character_id: "c", room_id: "elysium" }],
     event_log: [],
-  };
-  let saved = false;
-  const state = createMatrixEventState();
-  const sync = {
+  });
+  const makeSync = (eventId, content) => ({
     next_batch: "s1",
     rooms: { join: { "!elysium:local": { timeline: { events: [
-      { type: "m.room.message", event_id: "$1", sender: "@c:local", content: { msgtype: "m.text", body: "I speak." } },
+      { type: "m.room.message", event_id: eventId, sender: "@c:local", content },
     ] } } } },
-  };
+  });
 
-  const result = handleMatrixSync(db, sync, { state, saveState: () => { saved = true; } });
+  const db = makeDb();
+  let saved = false;
+  const announced = [];
+  const state = createMatrixEventState();
+  const sync = makeSync("$1", { msgtype: "m.text", body: "I speak." });
+
+  const result = handleMatrixSync(db, sync, {
+    state,
+    saveState: () => { saved = true; },
+    announce: (_db, roomId, text) => announced.push([roomId, text]),
+  });
   assert.equal(result.processed, 1);
   assert.equal(result.broke_obfuscate, 1);
   assert.equal(db.room_presence[0].obfuscate_level, 0);
@@ -243,7 +268,25 @@ function selfTest() {
   assert.equal(db.event_log[0].event_type, "message_broke_obfuscate");
   assert.equal(db.event_log[0].details.matrix_event_id, "$1");
   assert.equal(saved, true);
+  assert.deepEqual(announced, [["elysium", "C torna ad essere visibile"]]);
   assert.equal(handleMatrixSync(db, sync, { state, saveState: () => {} }).processed, 0);
+
+  // Whisper to the staff character must NOT break obfuscation (legacy wisperM=1 exception).
+  const dbStaff = makeDb();
+  const staffWhisper = makeSync("$2", { msgtype: "m.text", body: "psst", vp_rcpt: "@staff:local" });
+  const staffResult = handleMatrixSync(dbStaff, staffWhisper, { state: createMatrixEventState(), saveState: () => {} });
+  assert.equal(staffResult.broke_obfuscate, 0, "staff whisper must not break obfuscate");
+  assert.equal(dbStaff.room_presence[0].obfuscate_level, 2);
+  assert.equal(staffResult.results[0].reason, "staff_whisper");
+
+  // Whisper to another PC DOES break obfuscation (legacy: any wisperM=0 message breaks).
+  const dbPc = makeDb();
+  dbPc.characters.push({ id: "b", matrix_user_id: "@b:local", display_name: "B" });
+  const pcWhisper = makeSync("$3", { msgtype: "m.text", body: "psst", vp_rcpt: "@b:local" });
+  const pcResult = handleMatrixSync(dbPc, pcWhisper, { state: createMatrixEventState(), saveState: () => {} });
+  assert.equal(pcResult.broke_obfuscate, 1, "PC whisper must break obfuscate");
+  assert.equal(dbPc.room_presence[0].obfuscate_level, 0);
+
   return pollSelfTest();
 }
 

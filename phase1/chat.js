@@ -17,7 +17,7 @@
     return;
   }
 
-  var STAFF_MXID = "@staff:local";
+  var STAFF_MXID = window.VP_STAFF_MXID || "@staff:local";
   var room = null;             // current game room id (string)
   var roomName = {};           // id -> name
   var roomAdjacent = {};       // id -> [adjacent ids]
@@ -36,7 +36,10 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   };
-  var hasAus2 = function () { return !!(me && me.powers && me.powers.indexOf("aus2") !== -1); };
+  // Whisper reading is unlocked by "Aguzza l'udito" (legacy $_SESSION['auspex'] = 3), not
+  // by merely owning the aus2 power. The staff always reads everything.
+  var canReadWhispers = function () { return !!(me && (me.auspex_listen || me.is_staff)); };
+  var isStaffMxid = function (mxid) { return mxid === STAFF_MXID; };
 
   function setStatus(text) { $("status").textContent = text || ""; }
 
@@ -53,14 +56,17 @@
   }
 
   // Legacy chat_main.php formatting, ported to Matrix events. Whisper recipient is
-  // carried in content.vp_rcpt. aus2 reveals whisper content (legacy $_SESSION['auspex']>=2);
-  // everyone else sees "X parla con Y".
+  // carried in content.vp_rcpt. "Aguzza l'udito" reveals whisper content (legacy
+  // $_SESSION['auspex']>=2); everyone else sees "X parla con Y". Whispers that involve
+  // the staff are messagelvl=1 in the legacy: third parties see nothing at all.
   function renderMessage(e) {
     var sender = e.sender;
     var rcpt = e.content && e.content.vp_rcpt;
     var bodyText = esc((e.content && e.content.body) || "");
     var sName = esc(nameFromMxid(sender));
     if (e.content && e.content.vp_system) { // combat/system narration (no author)
+      // private feedback line (vp_rcpt set): only the recipient and the staff see it
+      if (rcpt && rcpt !== session.userId && !(me && me.is_staff)) return "";
       var scls = e.content.vp_color === "red" ? "medium_over" : "medium_oro";
       return '<span class="' + scls + '"><i>' + bodyText + "</i></span><br>";
     }
@@ -74,7 +80,14 @@
     if (rcpt === session.userId) {
       return '<span class="medium_over"><i>' + sName + '&nbsp;ti sussurra</i></span>&nbsp;<span class="medium">-&nbsp;' + bodyText + "</span><br>";
     }
-    if (hasAus2()) {
+    // whispers to/from the staff are invisible to everyone else (legacy messagelvl = 1),
+    // even with Auspex listening
+    if (isStaffMxid(rcpt) || isStaffMxid(sender)) {
+      return me && me.is_staff
+        ? '<span class="wisper_auspex"><i>' + sName + "&nbsp;sussurra a&nbsp;" + rName + "&nbsp;-&nbsp;" + bodyText + "</i></span><br>"
+        : "";
+    }
+    if (canReadWhispers()) {
       return '<span class="wisper_auspex"><i>' + sName + "&nbsp;sussurra a&nbsp;" + rName + "&nbsp;-&nbsp;" + bodyText + "</i></span><br>";
     }
     return '<span class="wisper_auspex"><i>' + sName + "&nbsp;parla con&nbsp;" + rName + "</i></span><br>";
@@ -83,10 +96,19 @@
   function pollMessages() {
     var mxRoom = matrixRoomById[room];
     if (!mxRoom) { $("messages").innerHTML = ""; return; } // unprovisioned room: navigable, no chat
+    if (!me) return; // wait for /me: the entrance filter below needs presence.entered_at
+    // Legacy chat_main.php: "AND m.ora >= u.entrata" — a PC only sees what happened after
+    // it entered the room. The staff is exempt (master view).
+    var entrataMs = 0;
+    if (!me.is_staff && me.presence && me.presence.entered_at) {
+      entrataMs = Date.parse(me.presence.entered_at) || 0;
+    }
     matrix("GET", "/rooms/" + encodeURIComponent(mxRoom) + "/messages?dir=b&limit=20")
       .then(function (res) {
         if (!res.ok) return;
-        var chunk = (res.body.chunk || []).filter(function (e) { return e.type === "m.room.message"; });
+        var chunk = (res.body.chunk || []).filter(function (e) {
+          return e.type === "m.room.message" && (!entrataMs || (e.origin_server_ts || 0) >= entrataMs);
+        });
         chunk.reverse(); // dir=b is newest-first; show chronological
         $("messages").innerHTML = chunk.map(renderMessage).join("");
         var main = $("vp-main") || document.body;
@@ -168,17 +190,27 @@
   function clearWhisper() { rcptTarget = null; $("rcpt").value = ""; }
 
   function refresh() {
-    sidecar("GET", "/me").then(function (res) { if (res.ok) me = res.body; });
-    sidecar("GET", "/rooms/" + room + "/visible-characters").then(function (res) {
-      if (res.ok) renderRoster(res.body.characters || []);
+    // /me first: renderMessage and the entrance filter depend on it (is_staff,
+    // auspex_listen, presence.entered_at)
+    return sidecar("GET", "/me").then(function (res) {
+      if (res.ok) me = res.body;
+    }).catch(function () {}).then(function () {
+      syncAnkh();
+      sidecar("GET", "/rooms/" + room + "/visible-characters").then(function (res) {
+        if (res.ok) renderRoster(res.body.characters || []);
+      });
+      pollMessages();
     });
-    pollMessages();
   }
 
   function enterRoom() {
     return sidecar("POST", "/rooms/" + room + "/presence").then(function () {
       if (session.obf && !seenSelfObfuscate) {
         seenSelfObfuscate = true;
+        // The login checkbox means "enter obscured" once (legacy obf_in): consume it so a
+        // page refresh doesn't re-activate and re-broadcast the disappearance message.
+        session.obf = false;
+        sessionStorage.setItem("vp_obf", "0");
         return sidecar("POST", "/obfuscate").then(function (res) { setStatus(res.body.message || res.body.error || ""); });
       }
     }).then(refresh);
@@ -196,19 +228,28 @@
   }
 
   // ---- XP ankh (legacy gainXP) ----
+  // XP is SUSPENDED while obfuscated (client request; the legacy only doubled the delay):
+  // the ankh disappears when the PC hides and the timer restarts once it is visible again.
   var ankhTimer = null;
+  var ankhSuspended = false;
   function ankhImg() { var a = $("vp-ankh"); return a ? a.querySelector("img") : null; }
-  function effectiveDelaySec() {
-    var base = (me && me.tempo_px) || 60;
-    var hidden = me && me.presence && me.presence.obfuscate_level > 0;
-    return hidden ? base * 2 : base;
-  }
+  function isObfuscated() { return !!(me && me.presence && me.presence.obfuscate_level > 0); }
+  function effectiveDelaySec() { return (me && me.tempo_px) || 60; }
   function hideAnkh() { var a = ankhImg(); if (a) a.style.display = "none"; }
   function showAnkh() { var a = ankhImg(); if (a) { a.style.display = ""; a.style.cursor = "pointer"; } }
   function scheduleAnkh(sec) {
     if (ankhTimer) clearTimeout(ankhTimer);
     hideAnkh();
+    if (isObfuscated()) { ankhSuspended = true; return; }
+    ankhSuspended = false;
     ankhTimer = setTimeout(showAnkh, (sec || effectiveDelaySec()) * 1000);
+  }
+  function syncAnkh() { // called on every refresh tick with a fresh /me
+    if (isObfuscated()) {
+      if (!ankhSuspended) { if (ankhTimer) clearTimeout(ankhTimer); hideAnkh(); ankhSuspended = true; }
+    } else if (ankhSuspended) {
+      scheduleAnkh(); // just reappeared: XP resumes with a full delay
+    }
   }
   function clickAnkh() {
     hideAnkh();
@@ -263,8 +304,12 @@
   $("whisper").addEventListener("click", function () { setWhisper(STAFF_MXID, "Master"); });
   $("rcpt").addEventListener("click", clearWhisper); // click recipient field to go public again
   $("logout").addEventListener("click", function () {
-    sessionStorage.clear();
-    location.href = "/";
+    // Legacy logout.php: drop the presence row so others stop seeing the character online.
+    var leave = function () {
+      sessionStorage.clear();
+      location.href = "/";
+    };
+    sidecar("POST", "/logout").then(leave, leave);
   });
 
   var ankhNode = ankhImg();

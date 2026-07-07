@@ -1,4 +1,5 @@
 import { pathToFileURL } from "node:url";
+import { appearMessage } from "./obfuscate.mjs";
 
 // Faithful port of the legacy dice/challenge core (challenge_lib.php / calc_challenge.php):
 //   percsucc = floor(att / (att + def) * 100); roll 1..100; win if roll <= percsucc.
@@ -19,7 +20,8 @@ export const BUFFS = {
   potenza: { label: "Potenza", trait: "fis", amount: 2, duration: 300, scope: "all", msg: "%a sprigiona una forza sovrumana" },
   robustezza: { label: "Robustezza", trait: "fis", amount: 2, duration: 300, scope: "self", msg: "La tua pelle si fa dura come pietra" },
   presenza: { label: "Presenza", trait: "soc", amount: 2, duration: 300, scope: "all", msg: "%a emana un fascino magnetico e innaturale" },
-  auspex: { label: "Auspex", trait: "men", amount: 2, duration: 300, scope: "self", msg: "I tuoi sensi si acuiscono oltre il naturale" },
+  // Auspex has no "Attiva" buff: its powers are the Scruta/Aguzza l'udito buttons (client
+  // confirmed the extra Attiva button had no meaningful effect and asked to remove it).
 };
 
 export const normalizeDiscipline = (name) =>
@@ -81,8 +83,30 @@ export function resolveChallenge(db, attacker, targetId, type) {
     message = `${a} attacca ${d}, ma il colpo non causa danno`;
     color = "gold";
   }
+
+  // Legacy calc_challenge.php calls obfuscate_off($_SESSION['userID']) after the contest,
+  // hit or miss: attacking always drops the attacker out of obfuscation. The appear line
+  // is announced by the caller before the combat narration.
+  let attacker_appear_message = null;
+  if (ap.obfuscate_level > 0) {
+    ap.obfuscate_level = 0;
+    clearReveals(db, attacker.id);
+    const powers = (db.character_powers || db.powers || [])
+      .filter((p) => p.character_id === attacker.id)
+      .map((p) => p.power_code ?? p.ref_disc);
+    attacker_appear_message = appearMessage(attacker, powers);
+    logEvent(db, "challenge_broke_obfuscate", attacker.id, ap.room_id, {}, targetId);
+  }
+
   logEvent(db, "challenge", attacker.id, ap.room_id, { type, percsucc, roll, won }, targetId);
-  return { status: 200, body: { won, percsucc, roll, message, color, type: t.label }, room_id: ap.room_id, message, color };
+  return {
+    status: 200,
+    body: { won, percsucc, roll, message, color, type: t.label },
+    room_id: ap.room_id,
+    message,
+    color,
+    attacker_appear_message,
+  };
 }
 
 export function activateBuff(db, character, powerKey) {
@@ -119,6 +143,14 @@ function selfTest() {
   const r = resolveChallenge(db, db.characters[0], "b", "fisica");
   assert(r.body.percsucc === 75, "percsucc " + r.body.percsucc);
   assert(r.body.roll >= 1 && r.body.roll <= 100, "roll range");
+  assert(r.attacker_appear_message === null, "visible attacker has no appear message");
+  // attacking while obfuscated breaks the attacker's obfuscation, hit or miss (legacy)
+  db.room_presence[0].obfuscate_level = 2;
+  db.character_powers = [{ character_id: "a", power_code: "ott2" }];
+  const r2 = resolveChallenge(db, db.characters[0], "b", "fisica");
+  assert(db.room_presence[0].obfuscate_level === 0, "attack must break attacker obfuscate");
+  assert(r2.attacker_appear_message === "A emerge dalle ombre", "attacker appear message");
+  assert(!BUFFS.auspex, "auspex must not be an Attiva buff");
   // expired buff ignored
   db.characters[0].buffs = [{ trait: "fis", amount: 2, expires: nowSec() - 1 }];
   assert(effectiveTrait(db.characters[0], "fis") === 4, "expired buff ignored");

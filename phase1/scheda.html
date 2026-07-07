@@ -112,17 +112,19 @@
 
       var powerRows = "";
       if (has("obf1", "obf2", "ott1", "ott2")) {
-        var oLabel = hidden ? "Oscurati" : "Appari", oAct = hidden ? "appear" : "obfuscate";
+        // Visible -> "Oscurati" (activate), hidden -> "Appari" (become visible again).
+        var oLabel = hidden ? "Appari" : "Oscurati", oAct = hidden ? "appear" : "obfuscate";
         powerRows += '<tr><td class="small" align="right"><b>OSCURAZIONE</b>&nbsp;</td>' +
           '<td><input type="button" class="button" value="' + oLabel + '" style="font-size:10px;width:100px;" data-action="' + oAct + '"></td></tr>';
       }
       if (has("aus1", "aus2")) {
         powerRows += '<tr><td class="small" align="right"><b>AUSPEX</b>&nbsp;</td>' +
-          '<td><input type="button" class="button" value="Scruta" style="font-size:10px;width:100px;" data-action="auspex"></td>' +
-          (powers.indexOf("aus2") !== -1 ? '<td><input type="button" class="button" value="Ascolta meglio" style="font-size:10px;width:100px;" data-action="auspex"></td>' : '') + '</tr>';
+          '<td><input type="button" class="button" value="Scruta nelle ombre" style="font-size:10px;width:100px;" data-action="auspex"></td>' +
+          (powers.indexOf("aus2") !== -1 ? '<td><input type="button" class="button" value="Aguzza l\'udito" style="font-size:10px;width:100px;" data-action="auspex2"></td>' : '') + '</tr>';
       }
-      // discipline buffs: powers that raise a trait for a duration
-      var BUFFKEYS = { celerita: "Celerità", potenza: "Potenza", robustezza: "Robustezza", presenza: "Presenza", auspex: "Auspex" };
+      // discipline buffs: powers that raise a trait for a duration (Auspex is not a buff:
+      // its buttons are Scruta/Aguzza l'udito above)
+      var BUFFKEYS = { celerita: "Celerità", potenza: "Potenza", robustezza: "Robustezza", presenza: "Presenza" };
       var norm = function (s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z]/g, ""); };
       var buffRows = "";
       Object.keys(c.disciplines || {}).forEach(function (k) {

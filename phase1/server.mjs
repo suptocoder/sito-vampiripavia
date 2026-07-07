@@ -5,7 +5,7 @@ import { extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getState, reseedKeepingMatrix, save, seedState } from "./store.mjs";
 import { activateObfuscate, appear, appearForPublicMessage } from "./obfuscate.mjs";
-import { useAuspex } from "./auspex.mjs";
+import { useAuspex, useAuspexListen } from "./auspex.mjs";
 import { resolveChallenge, activateBuff } from "./challenge.mjs";
 import { caccia, guarisci, volonta, refill, fva, bancaInfo, riscuoti, sendMissive, listMissive } from "./extra.mjs";
 import { visibleRosterForRoom } from "./roster.mjs";
@@ -120,7 +120,9 @@ async function bodyJson(req) {
 
 // Post a system/combat line into a game room's Matrix room via the service token, so it
 // shows for everyone (legacy reg_msg("",msg,"all",stanza)). Marked vp_system for styling.
-async function postRoomMessage(db, gameRoomId, text, color) {
+// With `privateTo` set (a Matrix user id) the line carries vp_rcpt and the chat renders it
+// only for that recipient and the staff — the legacy reg_msg_master(...) private feedback.
+async function postRoomMessage(db, gameRoomId, text, color, privateTo) {
   const room = db.rooms.find((r) => r.id === gameRoomId);
   // Falls back to the staff character's token so narration works without a dedicated
   // service token (e.g. after auto-provisioning).
@@ -132,7 +134,13 @@ async function postRoomMessage(db, gameRoomId, text, color) {
   await fetch(`${matrixConfig.homeserverUrl}/_matrix/client/v3/rooms/${encodeURIComponent(room.matrix_room_id)}/send/m.room.message/${txn}`, {
     method: "PUT",
     headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
-    body: JSON.stringify({ msgtype: "m.notice", body: text, vp_system: true, vp_color: color || "gold" }),
+    body: JSON.stringify({
+      msgtype: "m.notice",
+      body: text,
+      vp_system: true,
+      vp_color: color || "gold",
+      ...(privateTo ? { vp_rcpt: privateTo } : {}),
+    }),
   }).catch(() => {});
 }
 
@@ -207,8 +215,11 @@ async function route(req, res) {
   // MATRIX_BASE_URL, e.g. Railway private networking vs the public domain).
   if (req.method === "GET" && path === "/vp-config.js") {
     const publicUrl = (process.env.VP_PUBLIC_SYNAPSE_URL || matrixConfig.homeserverUrl || "http://localhost:8008").replace(/\/+$/, "");
+    // Staff Matrix id: the chat needs it to route "Sussurra ai Master" and to hide staff
+    // whispers from third parties whatever the homeserver's server_name is.
+    const staffMxid = state().characters.find((c) => c.is_staff)?.matrix_user_id || "@staff:local";
     res.writeHead(200, { "content-type": "text/javascript", "access-control-allow-origin": "*" });
-    return res.end(`window.VP_SYNAPSE_URL = ${JSON.stringify(publicUrl)};\n`);
+    return res.end(`window.VP_SYNAPSE_URL = ${JSON.stringify(publicUrl)};\nwindow.VP_STAFF_MXID = ${JSON.stringify(staffMxid)};\n`);
   }
 
   if (req.method === "GET" && (path === "/" || path === "/login.html")) {
@@ -267,13 +278,33 @@ async function route(req, res) {
     const room_id = roomPresence[1];
     if (!db.rooms.some((room) => room.id === room_id)) return fail(res, 404, "room not found");
     const existing = presenceOf(db, me.id);
-    if (existing) Object.assign(existing, { room_id, last_seen_at: now() });
-    else db.room_presence.push({ character_id: me.id, room_id, obfuscate_level: 0, last_seen_at: now() });
+    // entered_at is the legacy users.entrata: the chat hides messages older than it, so it
+    // must move only on a real entrance/room change — a same-room refresh keeps it (and
+    // keeps auspex reveals: legacy clear_auspex fires on movement, not on reload).
+    const moved = !existing || existing.room_id !== room_id || !existing.entered_at;
+    if (existing) Object.assign(existing, { room_id, last_seen_at: now(), ...(moved ? { entered_at: now() } : {}) });
+    else db.room_presence.push({ character_id: me.id, room_id, obfuscate_level: 0, last_seen_at: now(), entered_at: now() });
+    if (moved) {
+      db.auspex_reveals = db.auspex_reveals.filter(
+        (reveal) => reveal.observer_character_id !== me.id && reveal.hidden_character_id !== me.id,
+      );
+    }
+    save(db);
+    return json(res, 200, { ok: true, presence: presenceOf(db, me.id) });
+  }
+
+  // Legacy logout.php: drop the users row (presence) and clear the auspex table for the
+  // character, so nobody keeps seeing them online after they leave.
+  if (req.method === "POST" && path === "/logout") {
+    const presence = presenceOf(db, me.id);
+    db.room_presence = db.room_presence.filter((row) => row.character_id !== me.id);
     db.auspex_reveals = db.auspex_reveals.filter(
       (reveal) => reveal.observer_character_id !== me.id && reveal.hidden_character_id !== me.id,
     );
+    me.auspex_listen = false; // legacy unset($_SESSION['auspex'])
+    event(db, "logout", me.id, presence ? presence.room_id : null);
     save(db);
-    return json(res, 200, { ok: true, presence: presenceOf(db, me.id) });
+    return json(res, 200, { ok: true });
   }
 
   const visibleRoster = path.match(/^\/rooms\/([^/]+)\/visible-characters$/);
@@ -291,6 +322,11 @@ async function route(req, res) {
 
   if (req.method === "POST" && path === "/appear") {
     const result = appear(db, me);
+    // Automatic appear line for the whole room ("X emerge dalle ombre" / "X torna ad
+    // essere visibile") — the legacy obfuscate_out.php was silent, the client asked for it.
+    if (result.ok && result.broke_obfuscate && result.message) {
+      await postRoomMessage(db, result.room_id, result.message, "gold");
+    }
     return routeResult(res, db, result, () => {
       if (result.broke_obfuscate) event(db, "obfuscate_off", me.id, result.room_id);
     });
@@ -299,6 +335,29 @@ async function route(req, res) {
   if (req.method === "POST" && path === "/auspex") {
     const result = useAuspex(db, me);
     save(db);
+    // Feedback visible only to the activator and the staff (legacy reg_msg_master to self):
+    // the action line the client asked for, then the legacy success/failure notice.
+    if (result.status === 200) {
+      const presence = presenceOf(db, me.id);
+      if (presence) {
+        await postRoomMessage(db, presence.room_id, `${me.display_name} scruta le ombre`, "gold", me.matrix_user_id);
+        if (result.body.message) await postRoomMessage(db, presence.room_id, result.body.message, "gold", me.matrix_user_id);
+      }
+    }
+    return json(res, result.status, result.body);
+  }
+
+  // Legacy auspex2.php ("Aguzza l'udito"): from now on this character reads other PCs'
+  // whispers. Feedback goes only to the activator and the staff.
+  if (req.method === "POST" && path === "/auspex2") {
+    const result = useAuspexListen(db, me);
+    save(db);
+    if (result.status === 200) {
+      const presence = presenceOf(db, me.id);
+      if (presence) {
+        await postRoomMessage(db, presence.room_id, `${me.display_name} allunga le orecchie nel silenzio`, "gold", me.matrix_user_id);
+      }
+    }
     return json(res, result.status, result.body);
   }
 
@@ -307,13 +366,14 @@ async function route(req, res) {
     return json(res, 200, { events: db.event_log });
   }
 
-  // XP ankh (legacy gainXP.php): +1 px once the per-character delay elapses; the delay
-  // doubles while obfuscated (legacy pannello.php tempo_px*2).
+  // XP ankh (legacy gainXP.php): +1 px once the per-character delay elapses. The legacy
+  // merely doubled the delay while obfuscated (pannello.php tempo_px*2); the client asked
+  // to SUSPEND XP entirely while obfuscated and resume it once the PC is visible again.
   if (req.method === "POST" && path === "/gainxp") {
     const presence = presenceOf(db, me.id);
     if (!presence) return fail(res, 400, "character is not in a room");
-    const base = Number(me.tempo_px || 60);
-    const effective = (presence.obfuscate_level || 0) > 0 ? base * 2 : base;
+    if ((presence.obfuscate_level || 0) > 0) return fail(res, 403, "XP sospesi mentre sei oscurato");
+    const effective = Number(me.tempo_px || 60);
     const nowSec = Math.floor(Date.now() / 1000);
     const elapsed = nowSec - Number(me.delayXP || 0);
     if (elapsed < effective) return json(res, 429, { error: "too soon", next_in: effective - elapsed });
@@ -330,6 +390,11 @@ async function route(req, res) {
     const result = resolveChallenge(db, me, target, type);
     if (result.body.error) return json(res, result.status, result.body);
     save(db);
+    // Attacking while obfuscated always drops the attacker out of the shadows (legacy
+    // obfuscate_off on hit AND miss) — announce it before the combat narration.
+    if (result.attacker_appear_message) {
+      await postRoomMessage(db, result.room_id, result.attacker_appear_message, "gold");
+    }
     await postRoomMessage(db, result.room_id, result.message, result.color);
     return json(res, result.status, result.body);
   }
@@ -442,6 +507,8 @@ function startMatrixWatcher() {
     baseUrl: matrixConfig.homeserverUrl,
     accessToken: matrixConfig.accessToken || undefined,
     intervalMs: matrixConfig.syncPollMs,
+    // Speaking/acting broke someone's obfuscation: announce the reappearance to the room.
+    announce: (db, roomId, text) => { postRoomMessage(db, roomId, text, "gold"); },
     onError(error) {
       matrixStatus.error = error.message;
       matrixStatus.running = false;

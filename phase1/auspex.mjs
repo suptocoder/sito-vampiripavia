@@ -153,7 +153,7 @@ export function resolveAuspex(db, actorCharacterOrId, options = {}) {
 
   if (!targets.length) {
     logEvent(db, "auspex_fail", actor.id, roomId, { reason: "no hidden targets", level }, null, now);
-    return { status: 200, body: { message: "No invisible presence noticed", revealed: [] } };
+    return { status: 200, body: { message: "Non noti nessuna presenza invisibile", revealed: [] } };
   }
 
   // Phase 1 default is deterministic (agreed simplification). Pass { dice: true } or set
@@ -182,19 +182,50 @@ export function resolveAuspex(db, actorCharacterOrId, options = {}) {
   }
 
   if (!revealed.length) {
-    return { status: 200, body: { message: "No invisible presence noticed", revealed: [] } };
+    return { status: 200, body: { message: "Non noti nessuna presenza invisibile", revealed: [] } };
   }
 
   return {
     status: 200,
     body: {
-      message: "You notice a presence that escaped you",
+      message: "Noti una presenza che prima ti sfuggiva",
       revealed,
     },
   };
 }
 
 export const useAuspex = resolveAuspex;
+
+// Legacy auspex2.php ("Ascolta meglio", now "Aguzza l'udito"): requires Auspex level 2 and
+// not being obfuscated; costs nothing and sets $_SESSION['auspex']=3, which is what unlocks
+// reading other PCs' whispers in chat_main.php. Here the flag lives on the character as
+// auspex_listen and is cleared on logout (legacy unset at logout).
+export function useAuspexListen(db, actorCharacterOrId, options = {}) {
+  const actor = characterById(db, actorCharacterOrId);
+  if (!actor) return { status: 404, body: { error: "character not found" } };
+
+  const actorPresence = presenceOf(db, actor.id);
+  const roomId = actorPresence?.room_id || null;
+  const level = determineAuspexLevel(powersOf(db, actor.id));
+  const now = options.now || nowIso;
+
+  if (level < 2) {
+    logEvent(db, "auspex_listen_fail", actor.id, roomId, { reason: "missing auspex level 2", level }, null, now);
+    return { status: 403, body: { error: "missing auspex level 2 power" } };
+  }
+  if (!actorPresence) {
+    logEvent(db, "auspex_listen_fail", actor.id, roomId, { reason: "character is not in a room" }, null, now);
+    return { status: 400, body: { error: "character is not in a room" } };
+  }
+  if (actorPresence.obfuscate_level > 0) {
+    logEvent(db, "auspex_listen_fail", actor.id, roomId, { reason: "cannot use auspex while obfuscated" }, null, now);
+    return { status: 409, body: { error: "Non puoi usare Auspex da oscurato" } };
+  }
+
+  actor.auspex_listen = true;
+  logEvent(db, "auspex_listen_on", actor.id, roomId, { level }, null, now);
+  return { status: 200, body: { ok: true, listening: true } };
+}
 
 function testDb() {
   return {
@@ -257,8 +288,19 @@ function selfTest() {
   db = testDb();
   const miss = resolveAuspex(db, "b", { dice: true, roll: () => 0.999 });
   assertEqual(miss.body.revealed, [], "dice miss reveals nothing");
-  assertEqual(miss.body.message, "No invisible presence noticed", "dice miss gets failure notice");
+  assertEqual(miss.body.message, "Non noti nessuna presenza invisibile", "dice miss gets failure notice");
   assertEqual(db.characters[1].mental_points, 2, "dice miss still spends mental");
+
+  // Aguzza l'udito (legacy auspex2): aus2 only, blocked while obfuscated, no mental cost.
+  db = testDb();
+  assertEqual(useAuspexListen(db, "a").status, 403, "aus1 cannot listen");
+  assertEqual(useAuspexListen(db, "b").status, 200, "aus2 can listen");
+  assertEqual(db.characters[1].auspex_listen, true, "listen flag set");
+  assertEqual(db.characters[1].mental_points, 3, "listen costs no mental");
+  db = testDb();
+  db.presence[1].obfuscate_level = 1;
+  assertEqual(useAuspexListen(db, "b").status, 409, "obfuscated cannot listen");
+  assertEqual(Boolean(db.characters[1].auspex_listen), false, "rejected listen leaves flag unset");
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
@@ -273,5 +315,6 @@ export default {
   legacyMentalRoll,
   resolveAuspex,
   useAuspex,
+  useAuspexListen,
   visibleCharacters,
 };

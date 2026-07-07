@@ -1,12 +1,28 @@
 import { fileURLToPath } from "node:url";
 
-const OBFUSCATE_TEXT = "{name} no longer seems to be there";
-const SHADOW_TEXT = "{name} is swallowed by shadows";
+// Legacy obfuscate_in.php texts: Oscurazione vs Ottenebramento have distinct flavour.
+const OBFUSCATE_TEXT = "{name} non vi sembra più essere lì";
+const SHADOW_TEXT = "{name} viene inghiottito dalle ombre";
+// Legacy obfuscate_out.php was silent; the client asked for an automatic appear line.
+const OBFUSCATE_APPEAR_TEXT = "{name} torna ad essere visibile";
+const SHADOW_APPEAR_TEXT = "{name} emerge dalle ombre";
 
 const tables = (db) => ({
   presence: db.room_presence || db.presence || [],
   reveals: db.auspex_reveals || db.reveals || [],
 });
+
+const isShadowDiscipline = (powerCodes = []) => {
+  const powers = new Set(powerCodes.map(String));
+  return powers.has("ott1") || powers.has("ott2") || powers.has("17") || powers.has("18");
+};
+
+const powerCodesOf = (db, characterId) =>
+  (db.character_powers || db.powers || [])
+    .filter((power) => power.character_id === characterId)
+    .map((power) => power.power_code ?? power.ref_disc);
+
+const characterName = (character) => character?.display_name || character?.username || character?.name || character?.nome;
 
 const characterId = (character) => character?.id ?? character?.character_id;
 const mentalPoints = (character) => character?.mental_points ?? character?.men ?? 0;
@@ -23,11 +39,13 @@ export function obfuscateLevel(powerCodes = []) {
 }
 
 export function obfuscateMessage(character, powerCodes = []) {
-  const powers = new Set(powerCodes.map(String));
-  const template = powers.has("ott1") || powers.has("ott2") || powers.has("17") || powers.has("18")
-    ? SHADOW_TEXT
-    : OBFUSCATE_TEXT;
-  return template.replace("{name}", character.display_name || character.username || character.name || character.nome);
+  const template = isShadowDiscipline(powerCodes) ? SHADOW_TEXT : OBFUSCATE_TEXT;
+  return template.replace("{name}", characterName(character));
+}
+
+export function appearMessage(character, powerCodes = []) {
+  const template = isShadowDiscipline(powerCodes) ? SHADOW_APPEAR_TEXT : OBFUSCATE_APPEAR_TEXT;
+  return template.replace("{name}", characterName(character));
 }
 
 export function clearAuspexReveals(db, actorCharacterId) {
@@ -80,7 +98,16 @@ export function appear(db, actorOrCharacterId) {
   actorPresence.obfuscate_level = 0;
   clearAuspexReveals(db, id);
 
-  return { ok: true, status: 200, room_id: actorPresence.room_id, broke_obfuscate };
+  const character = typeof actorOrCharacterId === "object"
+    ? actorOrCharacterId
+    : (db.characters || []).find((row) => row.id === id) || { display_name: String(id) };
+  return {
+    ok: true,
+    status: 200,
+    room_id: actorPresence.room_id,
+    broke_obfuscate,
+    message: broke_obfuscate ? appearMessage(character, powerCodesOf(db, id)) : null,
+  };
 }
 
 export function appearForPublicMessage(db, actorOrCharacterId) {
@@ -96,6 +123,10 @@ export function appearForPublicMessage(db, actorOrCharacterId) {
 
 function selfTest() {
   const db = {
+    characters: [
+      { id: "a", display_name: "A", mental_points: 2 },
+      { id: "b", display_name: "B", mental_points: 2 },
+    ],
     room_presence: [
       { character_id: "a", room_id: "elysium", obfuscate_level: 0 },
       { character_id: "b", room_id: "elysium", obfuscate_level: 0 },
@@ -111,12 +142,17 @@ function selfTest() {
   if (actor.mental_points !== 2) throw new Error("rejected activation spent a mental point");
   db.room_presence[1].obfuscate_level = 1;
   const activated = activateObfuscate(db, actor, ["ott2"]);
-  if (!activated.ok || activated.message !== "A is swallowed by shadows") throw new Error("activation failed");
+  if (!activated.ok || activated.message !== "A viene inghiottito dalle ombre") throw new Error("activation failed");
   if (actor.mental_points !== 1 || db.room_presence[0].obfuscate_level !== 2) throw new Error("state update failed");
   if (db.auspex_reveals.length !== 2) throw new Error("activation must not clear auspex reveals (legacy keeps them)");
-  if (!appearForPublicMessage(db, actor).broke_obfuscate || db.room_presence[0].obfuscate_level !== 0) {
+  if (obfuscateMessage(actor, ["obf2"]) !== "A non vi sembra più essere lì") throw new Error("obf flavour text failed");
+  if (appearMessage(actor, ["ott2"]) !== "A emerge dalle ombre") throw new Error("ott appear text failed");
+  if (appearMessage(actor, ["obf1"]) !== "A torna ad essere visibile") throw new Error("obf appear text failed");
+  const broke = appearForPublicMessage(db, actor);
+  if (!broke.broke_obfuscate || db.room_presence[0].obfuscate_level !== 0) {
     throw new Error("message-break appear failed");
   }
+  if (broke.message !== "A torna ad essere visibile") throw new Error("appear must return the announce message");
   if (db.auspex_reveals.length !== 0) throw new Error("breaking obfuscate must clear reveals involving the actor");
   db.auspex_reveals.push({ observer_character_id: "a", hidden_character_id: "b", room_id: "elysium" });
   if (appearForPublicMessage(db, actor).broke_obfuscate || db.auspex_reveals.length !== 1) {
