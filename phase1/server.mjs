@@ -124,9 +124,10 @@ async function bodyJson(req) {
 // only for that recipient and the staff — the legacy reg_msg_master(...) private feedback.
 async function postRoomMessage(db, gameRoomId, text, color, privateTo) {
   const room = db.rooms.find((r) => r.id === gameRoomId);
-  // Falls back to the staff character's token so narration works without a dedicated
-  // service token (e.g. after auto-provisioning).
-  const token = matrixConfig.accessToken || db.characters.find((c) => c.id === "staff")?.access_token;
+  // Falls back to a staff character's token so narration works without a dedicated
+  // service token (e.g. after auto-provisioning). Found by the is_staff flag, so it
+  // works whatever the deployment named its staff character.
+  const token = matrixConfig.accessToken || db.characters.find((c) => c.is_staff)?.access_token;
   if (!room || !room.matrix_room_id || !matrixConfig.homeserverUrl || !token) return;
   const txn = `vp-sys-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
   // msgtype m.notice: the /sync watcher ignores notices, so system narration can never be

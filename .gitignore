@@ -2,6 +2,12 @@
 phase1/data.json
 phase1/data.json.audit-backup
 
+# Deployment secrets — never commit. Ship .env.example instead.
+.env
+
+# Real character roster — may contain per-player passwords. Ship roster.example.json only.
+phase1/roster.json
+
 # Local Synapse homeserver: signing keys, sqlite DB, media
 phase1/matrix/synapse-data/
 
@@ -25,3 +31,13 @@ legacy-php/
 
 # Local convenience launcher — contains a hardcoded local Matrix token
 start-sidecar.ps1
+
+# Internal working docs / dev notes — kept locally, not shipped to the client
+.codex-runlogs/
+CODEBASE_MEMORY.md
+phase-1-obfuscate-auspex-plan.md
+phase1/QA-AUDIT-REPORT.md
+phase1/VALIDATION-REPORT.md
+phase1/REAL-INTEGRATION.md
+phase1/server-integration-notes.md
+phase1/element-widget.md

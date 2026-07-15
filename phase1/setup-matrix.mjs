@@ -2,14 +2,7 @@ import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { resetSeed, save } from "./store.mjs";
-
-const users = [
-  ["a", "A"],
-  ["b", "B"],
-  ["c", "C"],
-  ["staff", "Staff"],
-];
+import { loadRoster, resetSeed, rosterConfigured, save } from "./store.mjs";
 
 const config = {
   homeserver: (process.env.MATRIX_HOMESERVER || process.env.MATRIX_BASE_URL || "http://localhost:8008").replace(/\/+$/, ""),
@@ -20,6 +13,18 @@ const config = {
   roomId: process.env.MATRIX_ROOM_ID || "",
   registrationSecret: process.env.SYNAPSE_REGISTRATION_SHARED_SECRET || "",
 };
+
+// The provisioning cast: [localpart, displayName, password]. When roster.json exists it is
+// the real cast (each entry may carry its own password; otherwise the shared MATRIX
+// password is used). No roster → the a/b/c/staff demo, all on the shared password.
+function rosterUsers() {
+  if (!rosterConfigured()) {
+    return [["a", "A"], ["b", "B"], ["c", "C"], ["staff", "Staff"]].map(([u, d]) => [u, d, config.password]);
+  }
+  return loadRoster().map((entry) => [entry.username, entry.display_name, entry.password || config.password]);
+}
+
+const users = rosterUsers();
 
 // One Matrix room per game room, sourced from the seeded room list (legacy stanze).
 const seedRooms = JSON.parse(readFileSync(new URL("./seed.json", import.meta.url), "utf8")).rooms;
@@ -65,19 +70,19 @@ async function matrix(method, path, token, body) {
   }
 }
 
-async function login(localpart) {
+async function login(localpart, password = config.password) {
   return matrix("POST", "/_matrix/client/v3/login", "", {
     type: "m.login.password",
     identifier: { type: "m.id.user", user: localpart },
-    password: config.password,
+    password,
     initial_device_display_name: "VP phase1 setup",
   });
 }
 
-async function register(localpart) {
+async function register(localpart, password = config.password) {
   const body = {
     username: localpart,
-    password: config.password,
+    password,
     inhibit_login: false,
     initial_device_display_name: "VP phase1 setup",
   };
@@ -92,42 +97,42 @@ async function register(localpart) {
   }
 }
 
-function registrationMac(nonce, localpart) {
+function registrationMac(nonce, localpart, password = config.password) {
   return createHmac("sha1", config.registrationSecret)
-    .update(`${nonce}\0${localpart}\0${config.password}\0notadmin`)
+    .update(`${nonce}\0${localpart}\0${password}\0notadmin`)
     .digest("hex");
 }
 
-async function synapseRegister(localpart) {
+async function synapseRegister(localpart, password = config.password) {
   const { nonce } = await matrix("GET", "/_synapse/admin/v1/register", "", null);
   const registered = await matrix("POST", "/_synapse/admin/v1/register", "", {
     nonce,
     username: localpart,
-    password: config.password,
+    password,
     admin: false,
-    mac: registrationMac(nonce, localpart),
+    mac: registrationMac(nonce, localpart, password),
   });
-  return registered.access_token ? registered : login(localpart);
+  return registered.access_token ? registered : login(localpart, password);
 }
 
-async function loginOrRegister(localpart) {
+async function loginOrRegister(localpart, password = config.password) {
   if (config.registrationSecret) {
     try {
-      return await synapseRegister(localpart);
+      return await synapseRegister(localpart, password);
     } catch (error) {
       if (error.errcode !== "M_USER_IN_USE") throw error;
     }
   }
   try {
-    return await login(localpart);
+    return await login(localpart, password);
   } catch (loginError) {
     try {
-      return await register(localpart);
+      return await register(localpart, password);
     } catch (registerError) {
       if (registerError.errcode === "M_USER_IN_USE") {
-        throw new Error(`${userId(localpart)} already exists but MATRIX_DEMO_PASSWORD did not log in`);
+        throw new Error(`${userId(localpart)} already exists but the configured password did not log in`);
       }
-      if (registerError.errcode === "M_FORBIDDEN" && config.registrationSecret) return synapseRegister(localpart);
+      if (registerError.errcode === "M_FORBIDDEN" && config.registrationSecret) return synapseRegister(localpart, password);
       if (registerError.errcode === "M_FORBIDDEN") {
         throw new Error(`registration is disabled on ${config.homeserver}; enable local registration or pre-create ${userId(localpart)}`);
       }
@@ -195,16 +200,22 @@ function updateStore(accounts, matrixRooms) {
 
 async function main() {
   const accounts = {};
-  for (const [localpart, displayName] of users) {
+  for (const [localpart, displayName, password] of users) {
     console.log(`provision: user ${localpart}`);
-    accounts[localpart] = await loginOrRegister(localpart);
+    accounts[localpart] = await loginOrRegister(localpart, password);
     await setDisplayName(accounts[localpart], displayName);
   }
+
+  // Rooms are created/owned by a staff account when the roster names one, else the first
+  // provisioned user. Every user still joins every room.
+  const staffEntry = rosterConfigured() ? loadRoster().find((entry) => entry.is_staff) : { username: "staff" };
+  const creatorLocalpart = staffEntry?.username || users[0][0];
+  const creator = accounts[creatorLocalpart];
 
   const matrixRooms = {};
   let done = 0;
   for (const room of rooms) {
-    matrixRooms[room.id] = await createRoom(accounts.staff.access_token, serverNameOf(accounts.staff.user_id), room);
+    matrixRooms[room.id] = await createRoom(creator.access_token, serverNameOf(creator.user_id), room);
     for (const [localpart] of users) await joinRoom(accounts[localpart], matrixRooms[room.id]);
     done += 1;
     if (done % 10 === 0 || done === rooms.length) console.log(`provision: rooms ${done}/${rooms.length}`);

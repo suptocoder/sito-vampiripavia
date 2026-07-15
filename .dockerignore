@@ -9,6 +9,7 @@
 # excluded again from the whitelisted phase1 tree
 phase1/data.json
 phase1/data.json.audit-backup
+phase1/roster.json
 phase1/matrix/synapse-data/**
 phase1/screenshots/**
 phase1/_notes/**

@@ -1,0 +1,67 @@
+{
+  "_comment": [
+    "Real character roster for a self-hosted deployment. Copy this file to roster.json",
+    "and edit it to list YOUR players, then run provisioning (setup-matrix.mjs) or start",
+    "the sidecar with VP_AUTO_PROVISION=1. When roster.json is present it REPLACES the",
+    "built-in a/b/c/staff demo cast; the game rooms/map still come from seed.json.",
+    "",
+    "Per character:",
+    "  username       required. Matrix localpart (lowercase letters, digits, . _ = - /).",
+    "                 The Matrix id becomes @<username>:<MATRIX_SERVER_NAME> (default 'local').",
+    "  display_name   shown name in chat/roster. Defaults to username.",
+    "  password       this player's Matrix login password. If omitted, the shared",
+    "                 MATRIX_DEMO_PASSWORD / MATRIX_PASSWORD env value is used at",
+    "                 provisioning time. Prefer per-player passwords for a real game.",
+    "  is_staff       true = Narratore/GM: sees hidden PCs, reads the staff event log,",
+    "                 owns room creation. Give at least one character this.",
+    "  powers         discipline power codes the character owns. Obfuscate/Auspex are the",
+    "                 Phase-1 mechanics: obf1/obf2 (Oscurazione lvl 1/2),",
+    "                 ott1/ott2 (Ottenebramento lvl 1/2), aus1/aus2 (Auspex lvl 1/2).",
+    "  mental_points  starting/refill mental pool (powers cost 1 each; activation needs 2+).",
+    "",
+    "Any other sheet field (clan, status, citta, natura, gen, umanita, fis, soc, blood,",
+    "will, abilita, disciplines, note, tempo_px, ...) may also be set per character; unset",
+    "fields fall back to a sane default sheet. Delete this _comment block in your real file.",
+    "",
+    "IMPORTANT: roster.json is gitignored and excluded from the Docker image because it",
+    "can hold passwords. Mount it into the container (see SELF-HOST.md) rather than baking it."
+  ],
+  "characters": [
+    {
+      "username": "narratore",
+      "display_name": "Il Narratore",
+      "password": "change-me-storyteller",
+      "is_staff": true
+    },
+    {
+      "username": "marco",
+      "display_name": "Marco di Lasombra",
+      "password": "change-me-marco",
+      "clan": "lasombra",
+      "status": "Neonato",
+      "citta": "Pavia",
+      "powers": ["ott2"],
+      "mental_points": 5
+    },
+    {
+      "username": "sofia",
+      "display_name": "Sofia Tremere",
+      "password": "change-me-sofia",
+      "clan": "tremere",
+      "status": "Ancilla",
+      "citta": "Pavia",
+      "powers": ["aus2"],
+      "mental_points": 5
+    },
+    {
+      "username": "elena",
+      "display_name": "Elena Brujah",
+      "password": "change-me-elena",
+      "clan": "brujah",
+      "status": "Neonato",
+      "citta": "Pavia",
+      "powers": [],
+      "mental_points": 5
+    }
+  ]
+}

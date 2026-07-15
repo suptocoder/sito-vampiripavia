@@ -1,10 +1,26 @@
-# Phase 1 Matrix/Element RPG Overlay
+# Phase 1 — Sidecar & Chat UI (developer guide)
 
-Local Matrix/Element proof of concept for RPG roster visibility. Matrix owns chat, auth, room membership, and message delivery. The sidecar owns the RPG roster, Obfuscate, Auspex, staff log, and Element widget iframe.
+Matrix owns chat, auth, room membership, and message delivery. The sidecar
+(`server.mjs`, plain Node, zero npm dependencies) owns the RPG layer: the visible
+roster, Obfuscate/Auspex, challenges, character sheets, and the staff log — and serves
+the legacy-look chat front-end.
 
-## Run From A Clean Checkout
+**Deploying for real play? See [`../SELF-HOST.md`](../SELF-HOST.md).** This document
+covers running and developing the stack locally.
 
-Start Synapse and Element:
+## Characters
+
+The cast comes from `roster.json` (see `roster.example.json`; docs in `SELF-HOST.md`).
+Without a roster file, a built-in demo cast is used, handy for local development:
+
+- `@a:local` / A: Ottenebramento 2 (`ott2`)
+- `@b:local` / B: Auspex 2 (`aus2`)
+- `@c:local` / C: no powers
+- `@staff:local` / Staff: Narratore
+
+## Run locally from a clean checkout
+
+Start Synapse (and optionally Element) in Docker:
 
 ```powershell
 cd .\phase1\matrix
@@ -31,87 +47,67 @@ $env:MATRIX_SYNC_POLL_MS='500'
 node .\phase1\server.mjs
 ```
 
-Open the legacy-look front-end (this is the entry now):
-
-- `http://localhost:8787/` — legacy login → legacy room page (`chat.html`).
-
-The room page reuses the legacy `stili.css` + image assets and the original frameset
-geometry. Synapse is still the engine: the browser logs in to Synapse directly, sends and
-polls `m.room.message` events, and the sidecar serves the RPG roster / Obfuscate / Auspex.
-Element Web (`http://localhost:8080`) and the older `overlay.html` still run but are no
-longer the front-end.
+Open `http://localhost:8787/` — legacy login → legacy room page (`chat.html`). The
+browser logs in to Synapse directly, sends and polls `m.room.message` events, and the
+sidecar serves the RPG roster / powers. Without `VP_REQUIRE_AUTH=1`, identity can also be
+spoofed with `?as=@a:local` (used by the dev tools and tests); production deployments set
+`VP_REQUIRE_AUTH=1` so identity comes only from a verified Matrix access token.
 
 ## Validation
 
+Offline (no homeserver needed):
+
 ```powershell
 node .\phase1\server.mjs --self-test
+node .\phase1\test.mjs
+node .\phase1\setup-matrix.mjs --self-test
 node .\phase1\matrix-client.mjs
 node .\phase1\matrix-events.mjs
-node .\phase1\setup-matrix.mjs --self-test
-node .\phase1\test.mjs
+node .\phase1\auspex.mjs
+node .\phase1\obfuscate.mjs
+node .\phase1\challenge.mjs
+node .\phase1\extra.mjs
+node .\phase1\roster.mjs
+```
+
+Against the local stack (requires Synapse + provisioning above):
+
+```powershell
 node .\phase1\test-matrix-flow.mjs
 ```
 
-`test-matrix-flow.mjs` requires the local Synapse stack and provisioned users. It sends a real Matrix room message and verifies that the Matrix sync watcher breaks Obfuscate.
-
-## Users
-
-- `@a:local` / A: `obf2`, 5 mental points.
-- `@b:local` / B: `aus2`, 5 mental points.
-- `@c:local` / C: observer, 5 mental points.
-- `@staff:local` / Staff: staff event viewer.
-
-## Rooms
-
-`setup-matrix.mjs` creates or resolves the seeded rooms and writes real Matrix room IDs to `phase1/data.json`:
-
-- `elysium`
-- `strada`
-
-## Element Widget URL
-
-Use this URL as a custom widget or side panel:
-
-```text
-http://localhost:8787/overlay.html?matrix_user_id=$matrix_user_id&room_id=elysium
-```
-
-If Element does not expand variables in the local build, use literal Matrix IDs during validation:
-
-```text
-http://localhost:8787/overlay.html?matrix_user_id=@a:local&room_id=elysium
-```
+`test-matrix-flow.mjs` sends a real Matrix room message and verifies that the sync
+watcher breaks Obfuscate.
 
 ## API
 
-- `GET /health`
-- `POST /seed`
-- `GET /me`
-- `POST /rooms/:room_id/presence`
-- `GET /rooms/:room_id/visible-characters`
-- `POST /obfuscate`
-- `POST /appear`
-- `POST /auspex`
-- `GET /staff/events`
-- `GET /matrix/status`
+- `GET /health`, `GET /rooms`, `GET /matrix/status`
+- `POST /matrix/login` — proxy login, maps the Matrix user to a character
+- `GET /me`, `GET /characters/:id`
+- `POST /rooms/:room_id/presence`, `GET /rooms/:room_id/visible-characters`, `POST /logout`
+- `POST /obfuscate`, `POST /appear`, `POST /auspex`, `POST /auspex2`
+- `POST /challenge`, `POST /buff`
+- `POST /caccia`, `POST /guarisci`, `POST /volonta`, `POST /fva`, `POST /refill`, `POST /gainxp`
+- `GET /banca`, `POST /banca/riscuoti`, `GET /inventario`, `GET|POST /missive`
+- `GET /staff/events` (staff), `POST /seed` (staff or `VP_ADMIN_SECRET`)
 
-Local authentication is the Matrix user id passed as `x-matrix-user-id` or `?matrix_user_id=@a:local`. Production token validation is out of scope for Phase 1.
+## Behavior walkthrough
 
-## Flow
-
-1. A, B, and C enter Elysium; all appear in the overlay roster.
-2. A uses Obfuscate.
-3. B and C no longer see A in the overlay roster.
-4. A remains in the Matrix room and can read/send chat.
-5. B uses Auspex; A appears only to B as revealed.
-6. C still cannot see A.
-7. A sends a public message in Element.
-8. The Matrix sync watcher sees the `m.room.message` event and A becomes visible to everyone.
-9. Staff sees Obfuscate, Auspex, and message-break events in the staff log.
+1. A, B, and C enter a room; all appear in each other's roster.
+2. A activates Obfuscate → announced to the room, then A vanishes from B's and C's
+   rosters (A still reads and can send chat).
+3. B uses Auspex (*Scruta*) → A appears, dark-styled, only for B.
+4. A speaks publicly → the sync watcher sees the `m.room.message`, A reappears for
+   everyone, announced to the room.
+5. Staff sees hidden characters at all times and every event in the staff log.
 
 ## Limits
 
-- Inside this Element build, obfuscated PCs are hidden everywhere: the vampiric `.vp-roster` panel hides them per-observer, and Element's native member list / facepile are hidden outright (`element-vp.css`, `.vp-room` rules). A player cannot reveal a hidden PC by opening the member list.
-- Residual, protocol-level leak: Matrix room membership is shared state. A *different* Matrix client or the raw Client-Server API pointed at the same homeserver still sees who is joined. Hiding that would require patching Synapse (a fork), which is out of scope and not possible with stock Matrix.
-- Staff notifications are Phase 1 staff-log entries, not Matrix push notifications.
-- Runtime state is JSON-backed in `phase1/data.json`; production persistence is remaining work.
+- Invisibility is roster-level, the same trust model as the legacy site. Matrix room
+  membership is protocol-level shared state: a stock Matrix client pointed at the
+  homeserver shows everyone. Players must use the provided chat UI; keep homeserver
+  registration closed (the provided config does).
+- Runtime state is JSON on disk (`data.json`, or `VP_DATA_PATH`); Synapse has its own
+  database.
+- `overlay.html` is a development tool with an identity picker; it is intentionally
+  unusable when `VP_REQUIRE_AUTH=1`.

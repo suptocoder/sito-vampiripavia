@@ -1,0 +1,62 @@
+# Production stack for a private server: Synapse (Matrix homeserver) + the VP sidecar
+# (Node RPG engine + chat UI). Brings the whole game up with one command:
+#
+#   cp .env.example .env      # then edit the secrets
+#   cp phase1/roster.example.json phase1/roster.json   # then edit your real cast
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# See SELF-HOST.md for the full walkthrough (reverse proxy + TLS, first-boot provisioning,
+# resetting state). State lives in named volumes, so redeploys/restarts keep accounts,
+# rooms, messages, and RPG state.
+
+services:
+  synapse:
+    build:
+      context: ./phase1/matrix/railway
+      dockerfile: Dockerfile.synapse
+    restart: unless-stopped
+    environment:
+      SYNAPSE_SERVER_NAME: ${MATRIX_SERVER_NAME:-local}
+      SYNAPSE_REPORT_STATS: "no"
+      SYNAPSE_REGISTRATION_SHARED_SECRET: ${SYNAPSE_REGISTRATION_SHARED_SECRET:?set in .env}
+    volumes:
+      - synapse-data:/data
+    # Publish 8008 only if you terminate TLS in front of it (recommended) or expose it
+    # directly. The browser must be able to reach Synapse at VP_PUBLIC_SYNAPSE_URL.
+    ports:
+      - "${SYNAPSE_PORT:-8008}:8008"
+
+  sidecar:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - synapse
+    environment:
+      # Sidecar -> Synapse over the internal compose network (no public hop).
+      MATRIX_BASE_URL: http://synapse:8008
+      MATRIX_SERVER_NAME: ${MATRIX_SERVER_NAME:-local}
+      # Browser-facing Synapse URL: MUST be reachable from players' browsers (your public
+      # https domain for Synapse), not the internal name above.
+      VP_PUBLIC_SYNAPSE_URL: ${VP_PUBLIC_SYNAPSE_URL:?set in .env}
+      VP_DATA_PATH: /vp-data/data.json
+      VP_ROSTER_PATH: /app/phase1/roster.json
+      VP_REQUIRE_AUTH: "1"
+      VP_AUTO_PROVISION: "1"
+      SYNAPSE_REGISTRATION_SHARED_SECRET: ${SYNAPSE_REGISTRATION_SHARED_SECRET:?set in .env}
+      # Fallback password for roster entries that don't set their own `password`.
+      MATRIX_DEMO_PASSWORD: ${MATRIX_DEMO_PASSWORD:-}
+      VP_ADMIN_SECRET: ${VP_ADMIN_SECRET:-}
+      VP_AUSPEX_DICE: ${VP_AUSPEX_DICE:-}
+      PORT: "8787"
+    volumes:
+      - vp-data:/vp-data
+      # The real cast. roster.json is gitignored and NOT baked into the image, so mount it.
+      - ./phase1/roster.json:/app/phase1/roster.json:ro
+    ports:
+      - "${SIDECAR_PORT:-8787}:8787"
+
+volumes:
+  synapse-data:
+  vp-data:
